@@ -1,3 +1,8 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 
 /**
  * object containing all the instructions and their definitions, as defined in the manual
@@ -6,6 +11,13 @@
  */
 public class InstructionSet {
 	private static InstructionSet instruction_set;
+	
+	
+	/**
+	 * all the instructions that make up this instruction set,
+	 * fully described as stated in the InstructionMetadata class
+	 */
+	private ArrayList<InstructionMetadata> instructions;
 
 	
 	/**
@@ -13,7 +25,38 @@ public class InstructionSet {
 	 * only to be invoked from the getInstance method for the first initialization of the instruction set 
 	 */
 	protected InstructionSet() {
-		//initialize set, probably from a file
+		instructions = new ArrayList<InstructionMetadata>();
+		FileInputStream reader = null;
+		try {
+			reader = new FileInputStream("Instruction Metadata.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		Scanner in = new Scanner(reader);
+		boolean instruction_flag = false;
+		
+		//read the entire flag
+		while ( in.hasNext() ) {
+			String line = in.nextLine();
+			if ( ! instruction_flag ) {
+				//a flag for where the data begins
+				if ( line.equals("BEGIN") ) {
+					instruction_flag = true;
+				}
+			}
+			else {
+				//a flag for where the data ends
+				if ( line.equals("END") ) {
+					instruction_flag = false;
+				}
+				
+				//just making sure it is not an empty line
+				if ( line.length() > 3 ) {
+					instructions.add(new InstructionMetadata(line));
+				}
+			}			
+		}
+		
 	}
 	
 	/**
@@ -29,9 +72,25 @@ public class InstructionSet {
 	}
 	
 	/**
+	 * used only representing the instruction data, for debugging purposes
+	 */
+	public String getAllInstructionDescription () {
+		String res = "";
+		for ( InstructionMetadata instr : instructions ) {
+			res += instr.toString()+" \n";
+		}
+		return res;
+	}
+	
+	public static void main(String[] args) {
+		InstructionSet set = InstructionSet.getInstance();
+		System.out.println(set.getAllInstructionDescription());
+	}
+	
+	/**
 	 * determine the time needed to execute a specific instruction according to the instruction manual
 	 * @param description - of the instruction we are trying to evaluate duration of
-	 * @return time in T-number of states of the mP, -1 if the instruction parametar could not be found in th einstruction set
+	 * @return time in T-number of states of the mP, -1 if the instruction parameter could not be found in the instruction set
 	 */
 	public int getTime ( String description ) {
 		//To do read form map or something
