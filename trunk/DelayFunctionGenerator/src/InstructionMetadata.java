@@ -56,6 +56,18 @@ public class InstructionMetadata {
 	}
 
 	
+	/**
+	 * use this for a short overview of the instruction
+	 */
+	@Override
+	public String toString() {
+		return  instruction_code;
+	}
+	
+	/**
+	 * use this for a full description
+	 */
+	/*
 	@Override
 	public String toString() {
 		return  "Instruction: "+instruction_code + "\n"+
@@ -63,6 +75,7 @@ public class InstructionMetadata {
 				"Size in bytes: "+size+ "\n"+
 				"Elements_affected: "+elements_affected.toString() + "\n";
 	}
+	*/
 	
 	/**
 	 * getters and setters

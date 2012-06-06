@@ -19,7 +19,20 @@ public class InstructionSet {
 	 */
 	private ArrayList<InstructionMetadata> instructions;
 
-	
+	/**
+	 * @return the instructions
+	 */
+	public ArrayList<InstructionMetadata> getInstructions() {
+		return instructions;
+	}
+
+	/**
+	 * @param instructions the instructions to set
+	 */
+	public void setInstructions(ArrayList<InstructionMetadata> instructions) {
+		this.instructions = instructions;
+	}
+
 	/**
 	 * private constructor
 	 * only to be invoked from the getInstance method for the first initialization of the instruction set 

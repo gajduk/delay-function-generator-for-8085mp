@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 
@@ -15,6 +17,114 @@ public class CodeBuilder {
 	 */
 	private InstructionSet instruction_set;
 	
+	/**
+	 * out of all the instructions in the instruction set only a subset are available concerning the elements of the mP our delay
+	 * function is allowed to use, this array list contains only those instructions, they are the instructions that will be used
+	 * when generating out delay function
+	 */
+	private ArrayList<InstructionMetadata> instructions_available;
+	
+	/**
+	 * an array that contains the instruction codes for all possible build-able lengths of code
+	 * possible_length[i] == null if the length i can not be achieved by the available instructions
+	 * otherwise possible_lengths[i] will contain an array list of instructions that last exactly i-states
+	 */
+	private ArrayList<InstructionMetadata>[] possible_lengths;
+	
+	/**
+	 * the maximum possible length of code segments we see if we can create,
+	 * depends on 2 factors, the maximum number of instructions and the maximum length of a single instruction
+	 * maximum number of instructions < 50 
+	 * && maximum length of a single instruction (for 8085) is 16
+	 * =>  maximum possible length =~ 800
+	 * still we allow for some added length, just in case
+	 */
+	private int max_possible_length = 1000;
+	
+	
+	/**
+	 * this function will take all the arguments, separate the instructions that we can use out of the whole instruction set of the mP
+	 * with respect to the elements_usable, and will then calculate all possible length of instructions segments of maximum instructions
+	 * to instruction limit, and store that information in the possible_lengths array 
+	 * @param mP - string description for the microprocessor which instruction set should be used
+	 * @param elements_usable - descriptors for all the elements that are available to the function to operate with,
+	 * 		  such as registers and memory locations
+	 * @param instruction_limit - the maximum number of instructions that should be used to achieve the required duration,
+	 * 		  use -1 if the limit is not specified, and 20 as the default value
+	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
+	 */
+	public void precomputeAllPossibleLengths ( String mP , Element elements_usable[] , int instruction_limit  ) {
+		setInstructionSet(mP);
+		instructions_available = getAllAvailableInstructions(instruction_set,elements_usable);
+		//all are null in start
+		possible_lengths = new ArrayList[max_possible_length];
+		// no instructions are needed for length of 0
+		possible_lengths[0] = new ArrayList<InstructionMetadata>();
+		
+		//logic for generating, we must use at max 'instruction_limit' instructions
+		for ( int k = 0 ; k < instruction_limit ; ++k ) {
+			for ( int i = max_possible_length-1 ; i >= 0 ; --i ) {
+				for ( int w = 0 ; w  < instructions_available.size() ; ++w ) {
+					if ( possible_lengths[i] != null ) {
+						if ( i+instructions_available.get(w).getLength() < max_possible_length && 
+							possible_lengths[i+instructions_available.get(w).getLength()] == null ) {
+							possible_lengths[i+instructions_available.get(w).getLength()] = new ArrayList<InstructionMetadata>();
+							for ( InstructionMetadata is : possible_lengths[i] ) {
+								possible_lengths[i+instructions_available.get(w).getLength()].add(is);
+							}
+							possible_lengths[i+instructions_available.get(w).getLength()].add(instructions_available.get(w));
+						}
+					}
+				}
+			}
+		}
+		
+		/**
+		 * un-comment this if you want to see all possible length, debugging only
+		 */
+		/*
+		for ( int i = 0 ; i < 100 ; ++i ) {
+			System.out.print("Of length "+i+" :");
+			if ( possible_lengths[i] == null ) {
+				System.out.println(" NOT POSSIBLE");
+			}
+			else {
+				System.out.println(possible_lengths[i]);
+			}
+		}
+		*/
+	}
+	
+	
+	/**
+	 * this function will take all the arguments, separate the instructions that we can use out of the whole instruction set of the mP
+	 * with respect to the elements_usable
+	 * @param instruction_set - an object describing the instruction set of a given mP, it contains all the instructions fully described
+	 * @param elements_usable - descriptors for all the elements that are available to the function to operate with,
+	 * 		  such as registers and memory locations
+	 * @return
+	 */
+	private ArrayList<InstructionMetadata> getAllAvailableInstructions(
+			InstructionSet instruction_set, Element[] elements_usable) {
+		// TODO Auto-generated method stub
+		return instruction_set.getInstructions();
+	}
+
+	/**
+	 * @return the instructions_available
+	 */
+	public ArrayList<InstructionMetadata> getInstructions_available() {
+		return instructions_available;
+	}
+
+	/**
+	 * @param instructions_available the instructions_available to set
+	 */
+	public void setInstructions_available(
+			ArrayList<InstructionMetadata> instructions_available) {
+		this.instructions_available = instructions_available;
+	}
+
 	public void setInstructionSet ( InstructionSet instruction_set ) {
 		this.instruction_set = instruction_set;
 	}
