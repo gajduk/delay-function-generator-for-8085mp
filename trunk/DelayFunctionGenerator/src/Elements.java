@@ -1,9 +1,13 @@
-
+/**
+ * class that contains the data which instructions uses which resources of a mP system such as registers, memory and stack
+ * This class is specialized for 8085, since the last update in specification stated that the project is not general but specific and native to 8085
+ * @author Andrej Gajduk
+ */
 public class Elements {
 	
 	
 	/**
-	 * all the elements that are affected by this an instruction
+	 * all the elements that are affected by this instruction
 	 * the integer is coded as follows
 	 * 
 	 * bits 0-7 represent the 8 REGs in the following order
@@ -70,18 +74,81 @@ public class Elements {
 	//  is stack needed 0 = no , 1 = yes          0   1
 	private static final int[] stack_encoding = { 0 , 2048 };
 	
+	/**
+	 * a constructor for creating elements objects from string descriptors of instruction read from files
+	 * @param registers - string descriptor of the available registers
+	 * @param memory_locations - string descriptor of the available memory locations
+	 * @param stack - string descriptor of the available stack resource
+	 */
 	public Elements ( String registers , String memory_locations , String stack ) {
 		e = 0;
 		for ( int i = 0 ; i < registers.length() ; ++i ) {
 			char c = registers.charAt(i);
-			if ( (c >= 'A' && c <='H' && c != 'G') || ( c == 'L' ) ) {
-				e += register_encoding[c-'A'];
-			}
+			e += encodeRegister(c,e);
 		}
 		e += memory_encoding[Integer.parseInt(memory_locations)];
 		e += stack_encoding[Integer.parseInt(stack)];
 	}
 	
+	/**
+	 * constructor for when we want to create a stub-comparison object for determining whether or not we can use a specific instruction
+	 * with the usable elements, used when we want to separate the available instructions out of the whole instruction set
+	 * @param elements_usable - a descriptions of all the elements that needs to be encrypted in a single integer, as an instance of this class
+	 */
+	public Elements ( Element elements_usable[] ) {
+		e = 0;
+		if ( elements_usable == null || elements_usable.length == 0 ) return;
+		int memory_locations_counter = 0;
+		e += memory_encoding[memory_locations_counter++];
+		for ( Element el  : elements_usable ) {
+			if ( el.type == Element.REGISTER ) {
+				if ( el.status.equals(Element.available) ) {
+					char c = el.description.charAt(0);
+					e += encodeRegister(c,e);
+				}
+			}
+			else {
+			if ( el.type == Element.MEMORY ) {
+				if ( memory_locations_counter < 3 ) {
+					if ( el.status.equals(Element.available) ) {
+						e += memory_encoding[memory_locations_counter++];
+					}
+				}
+			}
+			else {
+			if ( el.type == Element.STACK ) {
+				if ( (e&stack_encoding[1]) == 0 ) {
+					if ( el.status.equals(Element.available) ) {
+						e += stack_encoding[1];
+					}
+				}
+			}
+			else {
+				System.err.println("UNKNOWN TYPE");
+			}
+			}}
+			
+		}
+	}
+
+	
+	/**
+	 * to be used internally as a method that returns the integer value that needs to be added to the description encoding,
+	 * so that it states availability of the register described by its char
+	 * @param register - char representing the register (A,B .. H,L .. )
+	 * @param e - current encoding - check if we already have that register encoded as available
+	 * @return
+	 */
+	private int encodeRegister ( char register , int e ) {
+		if ( (register >= 'A' && register <='H' && register != 'G') || ( register == 'L' ) ) {
+			if ( (e&register_encoding[register-'A']) == 0 ) return register_encoding[register-'A'];
+		}
+		return 0;
+	}
+
+	/*
+	 * geters and setters
+	 */
 	
 	public int getE() {
 		return e;
@@ -91,6 +158,9 @@ public class Elements {
 		this.e = e;
 	}
 	
+	/**
+	 * gives a nice detailed description of the resources used by an instruction
+	 */
 	@Override
 	public String toString() {
 		String res = "REGISTERS: ";
@@ -112,6 +182,16 @@ public class Elements {
 		if ( (e&stack_encoding[1]) == 0 ) res += " NOT ";
 		res += " REQUIRED";
 		return res;
+	}
+	
+	/**
+	 * a function used to separate available instructions from the whole instruction set,
+	 * it checks whether the given comparator object contains all the resources required for a given instruction to execute
+	 * @param comparator - an object describing the available resources
+	 * @return - boolean value - can we use this instruction, with the given resource 
+	 */
+	public boolean isAvailable ( Elements comparator ) {
+		return (comparator.e&e) == e;
 	}
 
 }

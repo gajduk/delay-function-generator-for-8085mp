@@ -63,7 +63,10 @@ public class Loop extends Executable {
 	 */
 	Executable other_instructions;
 
-	
+	/**
+	 * just a label for where the loop starts
+	 */
+	String label;
 	
 	/**
 	 * the number of iterations this loops is supposed to process through before exiting,
@@ -92,4 +95,26 @@ public class Loop extends Executable {
 		return result;
 	}
 
+	@Override
+	public int length() {
+		int result = 0;
+		result += init_instructions!=null?init_instructions.length():0;
+		result += other_instructions!=null?other_instructions.length():0;
+		result += dcr_instructions!=null?dcr_instructions.length():0;
+		result += cond_instructions!=null?cond_instructions.length():0;
+		return result;
+	}
+
+	
+	@Override
+	public String toString() {
+		String result = "";
+		result += init_instructions!=null?init_instructions.toString()+"\n":"";
+		result += label+":";
+		result += other_instructions!=null?other_instructions.toString()+"\n":"";
+		result += dcr_instructions!=null?dcr_instructions.toString()+"\n":"";
+		result += cond_instructions!=null?cond_instructions.toString()+"\n":"";
+		return result;
+	}
+	
 }

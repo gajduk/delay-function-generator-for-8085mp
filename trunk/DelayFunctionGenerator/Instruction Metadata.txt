@@ -75,7 +75,7 @@ CPI 8b    ;  7 ; 2 ; *    ; 0 ; 0 ;
 
 DAA       ;  4 ; 1 ; A    ; 0 ; 0 ;
 
-DAD BC    ; 10 ; 3 ; HL   ; 0 ; 0 ;
+DAD B    ; 10 ; 3 ; HL   ; 0 ; 0 ;
 DAD DE    ; 10 ; 3 ; HL   ; 0 ; 0 ;
 DAD HL    ; 10 ; 3 ; HL   ; 0 ; 0 ;
 DAD SP    ; 10 ; 3 ; HL   ; 0 ; 1 ;
@@ -89,10 +89,10 @@ DCR F     ;  4 ; 1 ; F    ; 0 ; 0 ;
 DCR H     ;  4 ; 1 ; H    ; 0 ; 0 ;
 DCR L     ;  4 ; 1 ; L    ; 0 ; 0 ;
 
-DCX BC    ;  6 ; 1 ; BC   ; 0 ; 0 ;
-DCX DE    ;  6 ; 1 ; DE   ; 0 ; 0 ;
-DCX HL    ;  6 ; 1 ; HL   ; 0 ; 0 ;
-DCX SP    ;  6 ; 1 ; *    ; 0 ; 1 ;
+DCX B     ;  6 ; 1 ; BC   ; 0 ; 0 ;
+DCX D     ;  6 ; 1 ; DE   ; 0 ; 0 ;
+DCX H     ;  6 ; 1 ; HL   ; 0 ; 0 ;
+DCX S     ;  6 ; 1 ; *    ; 0 ; 1 ;
 
 INR A     ;  4 ; 1 ; A    ; 0 ; 0 ;
 INR B     ;  4 ; 1 ; B    ; 0 ; 0 ;
@@ -103,10 +103,10 @@ INR F     ;  4 ; 1 ; F    ; 0 ; 0 ;
 INR H     ;  4 ; 1 ; H    ; 0 ; 0 ;
 INR L     ;  4 ; 1 ; L    ; 0 ; 0 ;
 
-INX BC    ;  6 ; 1 ; BC   ; 0 ; 0 ;
-INX DE    ;  6 ; 1 ; DE   ; 0 ; 0 ;
-INX HL    ;  6 ; 1 ; HL   ; 0 ; 0 ;
-INX SP    ;  6 ; 1 ; *    ; 0 ; 1 ;
+INX B     ;  6 ; 1 ; BC   ; 0 ; 0 ;
+INX D     ;  6 ; 1 ; DE   ; 0 ; 0 ;
+INX H     ;  6 ; 1 ; HL   ; 0 ; 0 ;
+INX S     ;  6 ; 1 ; *    ; 0 ; 1 ;
 
 JNZ 16b   ; 10 ; 3 ;      ; 0 ; 0 ;
 
@@ -114,10 +114,10 @@ LDA 16b   ; 13 ; 3 ; A    ; 1 ; 0 ;
 
 LHLD 16b  ; 16 ; 3 ; HL   ; 2 ; 0 ;
 
-LXI BC,16b; 10 ; 3 ; BC   ; 2 ; 0 ;
-LXI DE,16b; 10 ; 3 ; DE   ; 2 ; 0 ;
-LXI HL,16b; 10 ; 3 ; HL   ; 2 ; 0 ;
-LXI SP,16b; 10 ; 3 ; SP   ; 2 ; 1 ;
+LXI B,16b ; 10 ; 3 ; BC   ; 2 ; 0 ;
+LXI D,16b ; 10 ; 3 ; DE   ; 2 ; 0 ;
+LXI H,16b ; 10 ; 3 ; HL   ; 2 ; 0 ;
+LXI S,16b ; 10 ; 3 ; SP   ; 2 ; 1 ;
 
 MOV A,A   ; 4  ; 1 ; A    ; 0 ; 0 ;
 MOV A,B   ; 4  ; 1 ; A    ; 0 ; 0 ;
@@ -214,13 +214,13 @@ ORA L     ; 4  ; 1 ; L    ; 0 ; 0 ;
 
 ORI 8b    ; 7  ; 2 ; A    ; 0 ; 0 ;
 
-POP BC    ; 10 ; 3 ; BC   ; 0 ; 1 ;
-POP DE    ; 10 ; 3 ; DE   ; 0 ; 1 ;
-POP HL    ; 10 ; 3 ; HL   ; 0 ; 1 ;
+POP B     ; 10 ; 3 ; BC   ; 0 ; 1 ;
+POP D     ; 10 ; 3 ; DE   ; 0 ; 1 ;
+POP H     ; 10 ; 3 ; HL   ; 0 ; 1 ;
 
-PUSH BC   ; 12 ; 3 ; *    ; 0 ; 1 ;
-PUSH DE   ; 12 ; 3 ; *    ; 0 ; 1 ;
-PUSH HL   ; 12 ; 3 ; *    ; 0 ; 1 ;
+PUSH B    ; 12 ; 3 ; *    ; 0 ; 1 ;
+PUSH D    ; 12 ; 3 ; *    ; 0 ; 1 ;
+PUSH H    ; 12 ; 3 ; *    ; 0 ; 1 ;
 PUSH PSW  ; 12 ; 3 ; *    ; 0 ; 1 ;
 
 RAL       ; 4  ; 1 ; A    ; 0 ; 0 ;

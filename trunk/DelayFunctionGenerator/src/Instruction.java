@@ -26,6 +26,16 @@ public class Instruction extends Executable {
 		return InstructionSet.getInstance().getTime(instruction_code);
 	}
 
+	@Override
+	public String toString() {
+		return instruction_code;
+	}
+
+
+	@Override
+	public int length() {
+		return 1;
+	}
 	
 
 }

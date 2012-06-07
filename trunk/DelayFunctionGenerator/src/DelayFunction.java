@@ -40,4 +40,26 @@ public class DelayFunction extends Executable {
 		return result;
 	}
 
+
+
+	@Override
+	public int length() {
+		int result = 0;
+		result += init_instructions != null?init_instructions.length():0;
+		result += main_instructions != null?main_instructions.length():0;
+		result += finalize_instrucions != null?finalize_instrucions.length():0;
+		result += return_instruction != null?return_instruction.length():0;
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		result += init_instructions != null?init_instructions.toString():"";
+		result += main_instructions != null?main_instructions.toString():"";
+		result += finalize_instrucions != null?finalize_instrucions.toString():"";
+		result += return_instruction != null?return_instruction.toString():"";
+		return result;
+	}
+
 }
