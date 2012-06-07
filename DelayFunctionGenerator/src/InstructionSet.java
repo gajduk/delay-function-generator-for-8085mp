@@ -171,7 +171,7 @@ public class InstructionSet {
 	 * @return a code segment used to return to the main routine and declaring an end to the delay function
 	 * *NOTICE:always should this segment be last in a function
 	 */
-	public Executable getReturnSegment(  ) {
+	public Executable getReturnSegment( ) {
 		//give back the set specific condition-checking instruction code segment
 		return null;
 	}
@@ -183,6 +183,14 @@ public class InstructionSet {
 	public int getMaxInitValue() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public InstructionMetadata getInstruction(String string) {
+		for ( InstructionMetadata ins : instructions ) {
+			if ( ins.getInstruction_code().equals(string) )
+				return ins;
+		}
+		return null;
 	}
 	
 }

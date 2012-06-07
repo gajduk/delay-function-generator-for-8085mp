@@ -27,18 +27,33 @@ public class InstructionGroup extends Executable {
 	/**
 	 * default constructor, initialize the instructions to a the instruction array param
 	 * @param instuctions - copy this as the instruction group
+	 *  *Notice: of all the meta-data in the instructions use only the instruction opcode
 	 */
-	public InstructionGroup ( ArrayList<Executable> instuctions ) {
+	public InstructionGroup ( ArrayList instuctions ) {
 		this.instuctions = new ArrayList<Executable>(instuctions.size());
-		Collections.copy(this.instuctions,instuctions);
-	}
+		if ( instuctions.size() < 0 ) return;
+		if ( instuctions.get(0).getClass() == InstructionMetadata.class ) {
+			for ( Object is : instuctions ) {
+				String instruction_code = ((InstructionMetadata) is).getInstruction_code();
+				instruction_code = instruction_code.replaceAll("8b", Integer.toString((int)(Math.random()*(1<<8))));
+				instruction_code = instruction_code.replaceAll("16b", Integer.toString((int)(Math.random()*(1<<16))));
+				this.instuctions.add(new Instruction(instruction_code));
+			}
+		}
+		else {
+			for ( Object is : instuctions ) {
+				this.instuctions.add((Executable) is);
+			}
+		}
+	}	
+
 
 	/**
 	 * a shortcut constructor for creating a single instruction groups
 	 * @param instruction
 	 */
 	public InstructionGroup(Instruction instruction) {
-		this.instuctions = new ArrayList<Executable>(instuctions.size());
+		this.instuctions = new ArrayList<Executable>();
 		this.instuctions.add(instruction);
 	}
 
@@ -56,6 +71,23 @@ public class InstructionGroup extends Executable {
 			total_time += e.time();
 		}
 		return total_time;
+	}
+	
+	@Override
+	public String toString() {
+		if ( instuctions == null ) return "ERROR null value found";
+		if ( instuctions.size() == 0 ) return "NO INSTRUCTIONS. EMPTY GROUP";
+		String res = "";
+		for ( Executable i : instuctions ) {
+			res += " "+ i.toString() + " ; ";
+		}
+		return res;
+	}
+
+
+	@Override
+	public int length() {
+		return instuctions == null ? 0 : instuctions.size();
 	}
 
 }

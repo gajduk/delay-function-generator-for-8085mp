@@ -19,5 +19,11 @@ public abstract class Executable {
 	 * @return time in T- number of states of the mP
 	 */
 	public abstract int time();
+
+	/**
+	 * how many instructions are in this executable
+	 * @return
+	 */
+	public abstract int length();
 	
 }
