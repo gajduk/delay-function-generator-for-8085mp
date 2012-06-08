@@ -1,3 +1,4 @@
+package ukim.finki.mps.delay_fucntion_generator;
 
 /**
  * defines the interface for any instruction or group of instructions
@@ -5,7 +6,8 @@
  *
  */
 public abstract class Executable {
-	/*
+	
+	/**
 	 * elements this instruction affects such as registers or memory locations
 	 * they should not be used by any other instruction in the delay function, 
 	 * and should be declared available for the delay function,
@@ -22,7 +24,7 @@ public abstract class Executable {
 
 	/**
 	 * how many instructions are in this executable
-	 * @return
+	 * @return number of instructions
 	 */
 	public abstract int length();
 	

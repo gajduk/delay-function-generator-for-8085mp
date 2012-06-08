@@ -1,7 +1,7 @@
+package ukim.finki.mps.delay_fucntion_generator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
 
 /**
  * a group of instructions defined in the instruction set manual
@@ -23,7 +23,6 @@ public class InstructionGroup extends Executable {
 		instuctions = new ArrayList<Executable>();
 	}
 	
-	
 	/**
 	 * default constructor, initialize the instructions to a the instruction array param
 	 * @param instuctions - copy this as the instruction group
@@ -32,9 +31,9 @@ public class InstructionGroup extends Executable {
 	public InstructionGroup ( ArrayList instuctions ) {
 		this.instuctions = new ArrayList<Executable>(instuctions.size());
 		if ( instuctions == null || instuctions.size() < 0 ) return;
-		if ( instuctions.get(0).getClass() == InstructionMetadata.class ) {
+		if ( instuctions.get(0).getClass() == InstructionData.class ) {
 			for ( Object is : instuctions ) {
-				this.instuctions.add(((InstructionMetadata) is).getExecutable());
+				this.instuctions.add(((InstructionData) is).getExecutable());
 			}
 		}
 		else {
@@ -44,7 +43,6 @@ public class InstructionGroup extends Executable {
 		}
 	}	
 
-
 	/**
 	 * a shortcut constructor for creating a single instruction groups
 	 * @param instruction
@@ -53,7 +51,6 @@ public class InstructionGroup extends Executable {
 		this.instuctions = new ArrayList<Executable>();
 		this.instuctions.add(instruction);
 	}
-
 
 	/**
 	 * how long will this InstructionGroup take to fully execute
@@ -72,8 +69,8 @@ public class InstructionGroup extends Executable {
 	
 	@Override
 	public String toString() {
-		if ( instuctions == null ) return "ERROR null value found";
-		if ( instuctions.size() == 0 ) return "NO INSTRUCTIONS. EMPTY GROUP";
+		if ( instuctions == null ) return "";//"ERROR null value found";
+		if ( instuctions.size() == 0 ) return "";//"NO INSTRUCTIONS. EMPTY GROUP";
 		String res = "";
 		boolean flag = true;
 		for ( Executable i : instuctions ) {
@@ -88,11 +85,9 @@ public class InstructionGroup extends Executable {
 		return res;
 	}
 
-
 	/**
 	 * how many instructions are there in this group
-	 * the sum of the times for all instructions in this group
-	 * @return the number of instructions
+	 * @return number of instructions, the sum of all instructions in all 4 executables
 	 */
 	@Override
 	public int length() {
@@ -104,15 +99,21 @@ public class InstructionGroup extends Executable {
 		return total_length;
 	}
 
-
+	/**
+	 * used when we want an executable to be added to this group as the last Executable in the current sequence
+	 * @param exec - the executable to be added to this group
+	 */
 	public void append(Executable exec) {
 		if ( instuctions == null ) {
 			instuctions = new ArrayList<Executable>();
 		}
 		instuctions.add(exec);	
 	}
-
-
+	
+	/**
+	 * used when we want an executable to be added to this group as the first Executable in the current sequence
+	 * @param exec - the executable to be added to this group
+	 */
 	public void insert(Executable exec) {
 		if ( instuctions == null ) {
 			instuctions = new ArrayList<Executable>();
@@ -120,7 +121,11 @@ public class InstructionGroup extends Executable {
 		instuctions.add(0, exec);
 	}
 
-
+	/**
+	 * used to determine whether this group contains a specific executable
+	 * @param exec - an executable we are checking whether already is in this group
+	 * @return - true if the exact same executable is in this group (works only for single instructions, but that is the only reason it is calld for)
+	 */
 	public boolean contains(Executable exec) {
 		return instuctions.contains(exec);
 	}

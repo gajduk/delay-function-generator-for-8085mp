@@ -1,3 +1,4 @@
+package ukim.finki.mps.delay_fucntion_generator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.UUID;
  * @author Andrej Gajduk
  */
 public class CodeBuilder {
+	
 	/**
 	 * specifies the instruction set, i.e. the mP for the delay function
 	 */
@@ -20,7 +22,7 @@ public class CodeBuilder {
 	 * function is allowed to use, this array list contains only those instructions, they are the instructions that will be used
 	 * when generating out delay function
 	 */
-	private ArrayList<InstructionMetadata> instructions_available;
+	private ArrayList<InstructionData> instructions_available;
 	
 	/**
 	 * an array that contains the instruction codes for all possible build-able durations of code
@@ -28,105 +30,13 @@ public class CodeBuilder {
 	 * otherwise possible_durations[i] will contain an array list of instructions that last exactly i-states
 	 */
 	private Executable[] possible_durations;
-	
-	/**
-	 * the maximum possible duration of code segments we see if we can create,
-	 * depends on 2 factors, the maximum number of instructions and the maximum duration of a single instruction
-	 * maximum number of instructions < 50 
-	 * && maximum duration of a single instruction (for 8085) is 16
-	 * =>  maximum possible duration =~ 800
-	 * still we allow for some added duration, just in case
-	 * we should compute this for every call of the precomputing separate so we don;t do any excess computing
-	 */
-	private int max_possible_duration = 1000;
-	
-	/**
-	 * this function will take all the arguments, separate the instructions that we can use out of the whole instruction set of the mP
-	 * with respect to the elements_usable, and will then calculate all possible duration of instructions segments of maximum instructions
-	 * to instruction limit, and store that information in the possible_durations array 
-	 * @param mP - string description for the microprocessor which instruction set should be used
-	 * @param elements_usable - descriptors for all the elements that are available to the function to operate with,
-	 * 		  such as registers and memory locations
-	 * @param instruction_limit - the maximum number of instructions that should be used to achieve the required duration,
-	 * 		  use -1 if the limit is not specified, and 20 as the default value
-	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
-	 */
-	public void precomputeAllPossibleDurations ( String mP , Element elements_usable[] , int instruction_limit  ) {
-		setInstructionSet(mP);
-		precomputeAllPossibleDurations(elements_usable,instruction_limit);		
-	}
-	
-	/**
-	 * for this function to work the precomputeAllPossibledurations to have been called before
-	 * @return - an array list of Instruction descriptions that have duration in the interval [min_time,max_time]
-	 */
-	public Executable getInstructionsForDuration ( int min_time , int max_time ) {
-		if ( max_time < 0 ) return null;
-		if ( min_time < 0 ) min_time = 0;
-		for ( int i = min_time ; i <= max_time ; ++i ) {
-			if ( possible_durations[i] != null ) return possible_durations[i];
-		}
-		return null;
-	}
-	
-	/**
-	 * this function will take all the arguments, separate the instructions that we can use out of the whole instruction set of the mP
-	 * with respect to the elements_usable, 
-	 * @param instruction_set - an object describing the instruction set of a given mP, it contains all the instructions fully described
-	 * @param elements_usable - descriptors for all the elements that are available to the function to operate with,
-	 * 		  such as registers and memory locations
-	 * @return - array list of instructions descriptions
-	 * *IMPORTANT NOTICE: if there are two instruction or  more each of duration 'k' then only one instruction will be taken in consideration
-	 * we don;t need any repetition 
-	 */
-	private ArrayList<InstructionMetadata> getAllAvailableInstructions(
-			InstructionSet instruction_set, Element[] elements_usable) {
-		ArrayList<InstructionMetadata> res = new ArrayList<InstructionMetadata>();
-		Elements comp = new Elements(elements_usable);
-		boolean[] already_have = new boolean[20];
-		for ( InstructionMetadata i : instruction_set.getInstructions() ) {
-			if ( i.isTo_use() && i.isAvailable(comp) && !already_have[i.getDuration()])  {
-				res.add(i);
-				already_have[i.getDuration()] = true;
-			}
-		}
-		return res;
-	}
 
 	/**
-	 * @return the instructions_available
+	 * set the instruction_set to be of the specified mP
+	 * @param mP - the mP we will use to set the instruction set
 	 */
-	public ArrayList<InstructionMetadata> getInstructions_available() {
-		return instructions_available;
-	}
-
-	/**
-	 * @param instructions_available the instructions_available to set
-	 */
-	public void setInstructions_available(
-			ArrayList<InstructionMetadata> instructions_available) {
-		this.instructions_available = instructions_available;
-	}
-
-	public void setInstructionSet ( InstructionSet instruction_set ) {
-		this.instruction_set = instruction_set;
-	}
-	
-	private void setInstructionSet(String mP) {
-		if ( mP.equals("8085") ) {
-			instruction_set = InstructionSet8085.getInstance();
-		}
-	}
-	
-	public InstructionSet  getInstructionSet ( ) {
-		return instruction_set;
-	}
-	
-	/**
-	 * just used to set the default value of res to null
-	 */
-	public DelayFunction buildDelayFunction ( int min_time , int max_time , String mP , Element elements_usable[] ) {
-		return buildDelayFunction(min_time,max_time,mP,elements_usable,null);
+	public void setInstructionSet(String mP) {
+		instruction_set = InstructionSet.getInstance(mP);
 	}
 	
 	/**
@@ -146,7 +56,7 @@ public class CodeBuilder {
 	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
 	 * **further notice: the error allowed for the duration of the delay function should be reverse-proportional to the interval size		
 	 */
-	public DelayFunction buildDelayFunction ( int min_time , int max_time , String mP , Element elements_usable[] , DelayFunction res ) {
+	private DelayFunction buildDelayFunction ( int min_time , int max_time , String mP , Element elements_usable[] , DelayFunction res ) {
 		setInstructionSet(mP);
 		int n = getMaximumNumberofIterationsWhenNestingLoops(new Elements(elements_usable));
 		int k = getMaximumDurationWhenNestingLoops(new Elements(elements_usable));
@@ -157,6 +67,7 @@ public class CodeBuilder {
 		    res = new DelayFunction();
 		    res.init_instructions = new InstructionGroup();
 		    res.finalize_instrucions = new InstructionGroup();
+		    res.return_instruction = instruction_set.getRetInstrcution();
 		}
 		// l - number of nested instructions to add to get this duration, if this is large > 20~30
 		// consider making some more room for the mP loop_logic to operate by releasing some registers
@@ -186,15 +97,15 @@ public class CodeBuilder {
 						//if it is not the A register, we are in serious shit, we need first to move an data to the A register then
 						//transfer it to memory
 						if ( reg != 0 ) {
-								((InstructionGroup)res.init_instructions).append(getMoveInstruction("A",reg_s));
+								((InstructionGroup)res.init_instructions).append(instruction_set.getMoveInstruction("A",reg_s));
 						}
-						((InstructionGroup)res.init_instructions).append(getStoreInstruction(elements_usable[i].description));
+						((InstructionGroup)res.init_instructions).append(instruction_set.getStoreInstruction(elements_usable[i].description));
 						if (  reg != 0 ) {
-							((InstructionGroup)res.finalize_instrucions).insert(getMoveInstruction(reg_s,"A"));
-							((InstructionGroup)res.finalize_instrucions).insert(getLoadInstruction(elements_usable[i].description));
+							((InstructionGroup)res.finalize_instrucions).insert(instruction_set.getMoveInstruction(reg_s,"A"));
+							((InstructionGroup)res.finalize_instrucions).insert(instruction_set.getLoadInstruction(elements_usable[i].description));
 						}
-						else {
-							((InstructionGroup)res.finalize_instrucions).append(getLoadInstruction(elements_usable[i].description));
+						else {	
+							((InstructionGroup)res.finalize_instrucions).append(instruction_set.getLoadInstruction(elements_usable[i].description));
 						}
 						break;
 					}
@@ -209,11 +120,11 @@ public class CodeBuilder {
 							//if it is not the A register, we are in serious shit, we need first to move an data to the A register then
 							//transfer it to memory
 							//we might have already saved register C when we were trying to save register B, no need to push the same data twice
-							if ( !((InstructionGroup)res.init_instructions).contains(getPushInstruction(reg_s)) ) {
-								((InstructionGroup)res.init_instructions).append(getPushInstruction(reg_s));
+							if ( !((InstructionGroup)res.init_instructions).contains(instruction_set.getPushInstruction(reg_s)) ) {
+								((InstructionGroup)res.init_instructions).append(instruction_set.getPushInstruction(reg_s));
 							}
-							if ( !((InstructionGroup)res.finalize_instrucions).contains(getPopInstruction(reg_s)) ) {
-								((InstructionGroup)res.finalize_instrucions).insert(getPopInstruction(reg_s));
+							if ( !((InstructionGroup)res.finalize_instrucions).contains(instruction_set.getPopInstruction(reg_s)) ) {
+								((InstructionGroup)res.finalize_instrucions).insert(instruction_set.getPopInstruction(reg_s));
 							}
 							break;
 						}
@@ -242,47 +153,39 @@ public class CodeBuilder {
 			return buildDelayFunction(min_time, max_time, mP, elements_usable, res);
 		}
 		int instruction_limit = l>0?l:0+loop_instructions;
+		
+		min_time -= res.time();
+		max_time -= res.time();
 		while ( true ) {
 			res.main_instructions = buildDelayFunction(min_time, max_time, elements_usable,instruction_limit);
 			if ( res.main_instructions != null ) break;
 			++instruction_limit;
 		}
-		res.return_instruction = getRetInstrcution();
 		return res;
 	}
 	
-	private String getRegPairForPushingPoping( String reg ) {
-		if ( reg.equals("B") | reg.equals("C") ) return "B";
-		if ( reg.equals("D") | reg.equals("E") ) return "D";
-		if ( reg.equals("H") | reg.equals("L") ) return "L";
-		if ( reg.equals("A") ) return "PSW";
-		return "";
+	/**
+	 * just used to set the default value of res to null
+	 */
+	public DelayFunction buildDelayFunction ( int min_time , int max_time , String mP , Element elements_usable[] ) {
+		return buildDelayFunction(min_time,max_time,mP,elements_usable,null);
 	}
-
-	private Executable getPopInstruction(String reg) {
-		return instruction_set.getInstruction("POP "+getRegPairForPushingPoping(reg)).getExecutable();
+		
+	/**
+	 * for this function to work the precomputeAllPossibledurations to have been called before
+	 * @return - an Executable that has duration in the interval [min_time,max_time]
+	 */
+	private Executable getInstructionsForDuration ( int min_time , int max_time ) {
+		if ( max_time < 0 ) return null;
+		if ( min_time < 0 ) min_time = 0;
+		for ( int i = min_time ; i <= max_time ; ++i ) {
+			if ( possible_durations[i] != null ) {
+				return possible_durations[i];
+			}
+		}
+		return null;
 	}
-
-	private Executable getPushInstruction(String reg) {
-		return instruction_set.getInstruction("PUSH "+getRegPairForPushingPoping(reg)).getExecutable();
-	}
-
-	private Executable getMoveInstruction(String dest, String src) {
-		return instruction_set.getInstruction("MOV "+dest+","+src).getExecutable();
-	}
-
-	private Executable getLoadInstruction( String memory_location ) {
-		return instruction_set.getInstruction("LDA 16b").getExecutable("16b",memory_location);
-	}
-
-	private Executable getStoreInstruction( String memory_location ) {
-		return instruction_set.getInstruction("STA 16b").getExecutable("16b",memory_location);
-	}
-
-	private int getMaximumDurationWhenNestingLoops(Elements elements) {
-		return getLoopLogicInstructionsDuration(loop_type_8b)*getMaximumNumberofIterationsWhenNestingLoops(elements);
-	}
-
+	
 	/**
 	 * the method to be used for generating delay functions with specific length of instructions
 	 * specifies all the input parameters needed
@@ -301,75 +204,20 @@ public class CodeBuilder {
 	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
 	 * **further notice: the error allowed for the duration of the delay function should be reverse-proportional to the interval size		
 	 */
-	public Executable buildDelayFunction ( int min_time , int max_time , Element elements_usable[] , int instruction_limit ) {
-		Executable result = new InstructionGroup();
-		//we have to have a return statement so that time is unavoidable, and instruction
-		
-		int return_instruction_duration = getRetInstrcution().time();
-		min_time -= return_instruction_duration;
-		max_time -= return_instruction_duration;
-		int return_instruction_length = 1;
-		instruction_limit -= return_instruction_length;
+	private Executable buildDelayFunction ( int min_time , int max_time , Element elements_usable[] , int instruction_limit ) {
 		precomputeAllPossibleDurations(elements_usable,instruction_limit);	
+		Executable exec = null;
 		
 		//first determine whether we need a loop
 		if ( min_time > getMaximumPossibleCreatedDuration() ) {
 			//we need a loop
-			Executable exec = buildLoop(min_time,max_time,elements_usable,instruction_limit,0);
-			if ( exec != null ) {
-				result = exec;
-			}
-			else {
-				//we can't create such a function and we need to quit
-				//System.out.println("SORRY NO CAN DO");
-				return null;
-			}
+			exec = buildLoop(min_time,max_time,elements_usable,instruction_limit,1);
 		}
 		else {
 			//we don't need a loop just generate a loop-less code segment and finish
-			Executable exec = getInstructionsForDuration(min_time,max_time);
-			if ( exec != null ) {
-				result = exec;
-			}
-			else {
-				//we can't create such a function and we need to quit
-				//System.out.println("SORRY NO CAN DO");
-				return null;
-			}
-			
+			exec = getInstructionsForDuration(min_time,max_time);
 		}
-		return result;
-	}
-	
-	private int maximum_created_duration;
-	private final static int maximum_created_duration_not_initialized = -1;
-	private int getMaximumPossibleCreatedDuration() {
-		if ( maximum_created_duration == maximum_created_duration_not_initialized ) {
-			for ( int i = max_possible_duration-1 ; i >= 0 ; --i ) {
-				if ( possible_durations[i] != null )  {
-					maximum_created_duration = i; break;
-				}
-			}
-		}
-		return maximum_created_duration;
-	}
-	
-	/**
-	 * the method stub to be used for generating a loopless code segment
-	 * specifies all the input parameters needed
-	 * @param min_time - lower bound for the duration of the code segment
-	 * @param max_time - upper bound for the duration of the code segment
-	 * @param mP - string description for the microprocessor which instruction set should be used
-	 * @param elements_usable - descriptors for all the elements that are available to the instructions to operate with,
-	 * 		  such as registers and memory locations
-	 * @param instruction_limit - the maximum number of instructions that should be used to achieve the required duration,
-	 * 		  use -1 if the limit is not specified
-	 * @return a code segment with an execution time that falls in the interval [min_time,max_time]
-	 * 			
-	 */
-	public Executable buildLooplessInstruciontGroup ( int min_time, int max_time , Element elements_usable[] , int instruction_limit  ) {
-		//TO DO
-		return null;
+		return exec;
 	}
 	
 	/**
@@ -388,7 +236,7 @@ public class CodeBuilder {
 	 * this should be dealt with in some other manner in the future, perhaps migrate it to the InstructionSet somehow
 	 * or create an AbstractBuilder
 	 */
-	public Executable buildLoop ( int min_time, int max_time, Element elements_usable[] , int instruction_limit , int nested_loops_counter ) {
+	private Executable buildLoop ( int min_time, int max_time, Element elements_usable[] , int instruction_limit , int nested_loops_counter ) {
 		/*
 		 * 8085 manual reference:
 		 * there will be two loop structures:
@@ -457,10 +305,10 @@ public class CodeBuilder {
 			if ( (de_pair&el.getE()) == de_pair ) {reg_pair = "D"; reg_pair_other_reg = "E"; }
 			else  {reg_pair = "H"; reg_pair_other_reg = "L"; }
 			
-			int init_instruction_duratoin = getInitInstructionsDuration(loop_type_16b);
-			int loop_logic_instructions_duration = getLoopLogicInstructionsDuration(loop_type_16b);
-			min_time -= init_instruction_duratoin;
-			max_time -= init_instruction_duratoin;
+			int init_instruction_duration = instruction_set.getInitInstructionsDuration(instruction_set.loop_type_16b);
+			int loop_logic_instructions_duration = instruction_set.getLoopLogicInstructionsDuration(instruction_set.loop_type_16b);
+			min_time -= init_instruction_duration;
+			max_time -= init_instruction_duration;
 			int min_iterations = 2;
 			int max_iterations = (1<<16)-1>max_time/loop_logic_instructions_duration ? max_time/loop_logic_instructions_duration:(1<<16)-1;
 			
@@ -468,8 +316,8 @@ public class CodeBuilder {
 			//we have already decided which elements to use to get the loop logic so remove them from the list of available elements
 			Element next_elements_usable[] = removeUsedRegisters(elements_usable, reg_pair , reg_pair_other_reg);
 			precomputeAllPossibleDurations(next_elements_usable,instruction_limit);	
-			Loop res = makeLoopByDeterminingInitValue(min_iterations, max_iterations, min_time, max_time, next_elements_usable, 
-					loop_logic_instructions_duration, instruction_limit, nested_loops_counter, reg_pair, loop_type_16b);
+			Loop res = buildLoopByDeterminingInitValue(min_iterations, max_iterations, min_time, max_time, next_elements_usable, 
+					   instruction_limit, nested_loops_counter, reg_pair, instruction_set.loop_type_16b);
 			if ( res != null ) return res;
 			
 		}
@@ -492,10 +340,10 @@ public class CodeBuilder {
 			else reg = "L";	
 			
 			//the loops structure instructions are a must so we need to subtract them
-			int init_instruction_duratoin = getInitInstructionsDuration(loop_type_8b);
-			int loop_logic_instructions_duration = getLoopLogicInstructionsDuration(loop_type_8b);
-			min_time -= init_instruction_duratoin;
-			max_time -= init_instruction_duratoin;
+			int init_instruction_duration = instruction_set.getInitInstructionsDuration(instruction_set.loop_type_8b);
+			int loop_logic_instructions_duration = instruction_set.getLoopLogicInstructionsDuration(instruction_set.loop_type_8b);
+			min_time -= init_instruction_duration;
+			max_time -= init_instruction_duration;
 			int min_iterations = 2;
 			int max_iterations = (1<<8)-1<max_time/loop_logic_instructions_duration ? (1<<8)-1 : max_time/loop_logic_instructions_duration;
 			
@@ -505,68 +353,50 @@ public class CodeBuilder {
 			
 			precomputeAllPossibleDurations(next_elements_usable,instruction_limit);	
 			
-			Loop res = makeLoopByDeterminingInitValue(min_iterations, max_iterations, min_time, max_time, next_elements_usable, 
-							loop_logic_instructions_duration, instruction_limit, nested_loops_counter, reg, loop_type_8b);
+			Loop res = buildLoopByDeterminingInitValue(min_iterations, max_iterations, min_time, max_time, next_elements_usable, 
+							instruction_limit, nested_loops_counter, reg, instruction_set.loop_type_8b);
 			if ( res != null ) return res;
 		}
 		return null;
 	}
 		
-	private static final int loop_type_16b = 0;
-	private static final int loop_type_8b = 1;
-	
-	private int getInitInstructionsDuration( int loop_type ) {
-		if ( loop_type == loop_type_8b  ) return 1; else
-		if ( loop_type == loop_type_16b ) return 7; else
-		return 0;
-	}
-	
-	private int getLoopLogicInstructionsDuration( int loop_type ) {
-		if ( loop_type == loop_type_8b  ) return 14; else
-		if ( loop_type == loop_type_16b ) return 16; else
-		return 0;
-	}
-
-	private Executable getRetInstrcution( ) {
-		return instruction_set.getInstruction("RET").getExecutable();
-	}
-	
-	private Executable getInitInstrcution( int loop_type , String reg_or_reg_pair , int init_value ) {
-		if ( loop_type == loop_type_8b ) {
-			return instruction_set.getInstruction("MVI "+reg_or_reg_pair+",8b").getExecutable("8b",Integer.toString(init_value));
-		}
-		else if (  loop_type == loop_type_16b )
-			return instruction_set.getInstruction("LXI "+reg_or_reg_pair+",16b").getExecutable("16b",Integer.toString(init_value));
-		else return null;
-	}
-	
-	private Executable getDcrInstrcution( int loop_type , String reg_or_reg_pair ) {
-		if ( loop_type == loop_type_8b ) 
-			return instruction_set.getInstruction("DCR "+reg_or_reg_pair).getExecutable();
-		else if (  loop_type == loop_type_16b )
-			return instruction_set.getInstruction("DCX "+reg_or_reg_pair).getExecutable();
-		else return null;
-	}
-	
-	private Executable getCondInstruction ( int loop_type , String location_label ) {
-		if ( loop_type == loop_type_8b || loop_type == loop_type_16b ) 
-			return instruction_set.getInstruction("JNZ 16b").getExecutable("16b",location_label);
-		else return null;
-	}
-		
+	/**
+	 * a method used to create a loop
+	 * @param loop_type -  type of loop 8bit or 16bit
+	 * @param init_value - this determines the number of iterations
+	 * @param label - label used to guide this loop's jumps
+	 * @param reg_or_reg_pair - string describing which register is used to implement this loop's logic
+	 * @param other_instructions - some instructions meant to give more duration to the loop, they are all nested
+	 * @return - a loop with default init, decr and cond segments and other set
+	 */
 	private Loop makeLoop ( int loop_type , int init_value , String label , String reg_or_reg_pair , Executable other_instructions ) {
 		Loop result = new Loop();
-		result.init_instructions = getInitInstrcution(loop_type, reg_or_reg_pair, init_value);
-		result.other_instructions = other_instructions;
-		result.dcr_instructions = getDcrInstrcution(loop_type, reg_or_reg_pair);
-		result.cond_instructions = getCondInstruction(loop_type, label);
-		result.label = label;
 		result.iterations = init_value;
+		result.init_instructions = instruction_set.getInitInstrcution(loop_type, reg_or_reg_pair, init_value);
+		result.other_instructions = other_instructions;
+		result.dcr_instructions = instruction_set.getDcrInstrcution(loop_type, reg_or_reg_pair);
+		result.cond_instructions = instruction_set.getCondInstruction(loop_type, label);
+		result.label = label;
 		return result;
 	}
 	
-	private Loop makeLoopByDeterminingInitValue ( int min_iterations , int max_iterations , int min_time , int max_time , 
-												  Element elements_usable[] , int loop_logic_instructions_duration , int instruction_limit , 
+	/**
+	 * this method is used to generate loops
+	 * it will try every possible number of iterations in the interval[min_iter,max_iter] 
+	 * for this loop's logic in order to get it's execution time in the interval [min_time,max_time],
+	 * @param min_iterations 
+	 * @param max_iterations
+	 * @param min_time 
+	 * @param max_time
+	 * @param elements_usable - describes all the elements this loop can use for the instruction that are part of the other executable
+	 * @param instruction_limit - the maximum number of instructions this loop can use for it's code
+	 * @param nested_loops_counter - keeping track of loop nesting in order to give a unique label for each loop
+	 * @param reg_or_reg_pair - the register the loop should use to implement it's logic
+	 * @param loop_type - the type of the loop we are trying to build - 8 bit or 16 bit
+	 * @return
+	 */
+	private Loop buildLoopByDeterminingInitValue ( int min_iterations , int max_iterations , int min_time , int max_time , 
+												  Element elements_usable[] , int instruction_limit , 
 												  int nested_loops_counter ,  String reg_or_reg_pair , int loop_type ) {
 		String label = "loop"+nested_loops_counter;
 		for ( int num_iterations = max_iterations  ; num_iterations >= min_iterations  ; --num_iterations ) {
@@ -575,6 +405,8 @@ public class CodeBuilder {
 			int next_max_time = max_time/num_iterations;
 			if ( next_min_time <= next_max_time ) {
 				//it just may work so go for it, first by subtracting the loop_logic_instructions_duration 
+				int loop_logic_instructions_duration = instruction_set.getLoopLogicInstructionsDuration(loop_type);
+				
 				next_min_time -= loop_logic_instructions_duration;
 				next_max_time -= loop_logic_instructions_duration;
 				if ( next_max_time < 0 ) {
@@ -590,23 +422,24 @@ public class CodeBuilder {
 				}
 				else {
 					//just generate a bunch of instructions
-					exec = getInstructionsForDuration(next_min_time<0?0:next_min_time, next_max_time);
+					exec = getInstructionsForDuration(next_min_time, next_max_time);
 				}
 				if ( exec != null ) {
 					//we got it
 					return makeLoop(loop_type, num_iterations, label, reg_or_reg_pair, exec);
 				}
-				else {
-					//better luck next time
-				}
-				
-				
 			}
 			//sorry guys, perhaps you can try with a different number of iteration
 		}
 		return null;
 	}
 	
+	/**
+	 * removes the specified register from the array of elements on our disposal, does not change the original array
+	 * @param elements_usable - current elements that we can use
+	 * @param registers - the String description of the register elements we need to remove from the array
+	 * @return a new array of elements that contain all the elements from the original but with the registers removed
+	 */
 	private Element[] removeUsedRegisters  ( Element elements_usable[] , String... registers ) {
 		ArrayList<Element> result = new ArrayList<Element>();
 		for ( Element e : elements_usable) {
@@ -615,11 +448,9 @@ public class CodeBuilder {
 					&& e.status.equals(Element.available) ) {
 				for ( int k = 0 ; k < registers.length ; ++k ) {
 					if ( e.description.equals(registers[k]) ) {
-						to_add = false;
-						break;
+						to_add = false;	break;
 					}
 				}
-				 
 			}
 			if ( to_add ) result.add(e);
 		}
@@ -639,18 +470,23 @@ public class CodeBuilder {
 	 * *notice: the mP that we will use is already set
 	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
 	 */
-	public long call_counter = 0;
-	public long iterations = 0;
-	public void precomputeAllPossibleDurations(Element[] elements_usable,
+	private void precomputeAllPossibleDurations(Element[] elements_usable,
 			int instruction_limit) {
-		long start = 0 ; long end = 0;
-		instructions_available = getAllAvailableInstructions(instruction_set,elements_usable);
-		max_possible_duration = instruction_limit*getMaximumInstructionDuration()+1;
-		maximum_created_duration = maximum_created_duration_not_initialized;
+		instructions_available = instruction_set.getAllAvailableInstructions(elements_usable);
+		/**
+		 * the maximum possible duration of code segments we see if we can create,
+		 * depends on 2 factors, the maximum number of instructions and the maximum duration of a single instruction
+		 * maximum number of instructions < 50 
+		 * && maximum duration of a single instruction (for 8085) is 16
+		 * =>  maximum possible duration =~ 800
+		 * still we allow for some added duration, just in case
+		 * we should compute this for every call of the precomputing separate so we don't do any excess computing
+		 */
+		int max_possible_duration = instruction_limit*getMaximumInstructionDuration()+1;
 		//all are null in start
-		ArrayList<InstructionMetadata>[] possible_durations_descr = new ArrayList[max_possible_duration];
+		ArrayList<InstructionData>[] possible_durations_descr = new ArrayList[max_possible_duration];
 		// no instructions are needed for duration of 0
-		possible_durations_descr[0] = new ArrayList<InstructionMetadata>();
+		possible_durations_descr[0] = new ArrayList<InstructionData>();
 		//logic for generating, we must use at max 'instruction_limit' instructions
 		//reference on algorithm used, here -> http://www.seeingwithc.org/topic1html.html
 		
@@ -658,23 +494,14 @@ public class CodeBuilder {
 			for ( int i = max_possible_duration-1 ; i >= 0 ; --i ) {
 				if ( possible_durations_descr[i] != null ) {
 					for ( int w = 0 ; w  < instructions_available.size() ; ++w ) {
-						if ( i+instructions_available.get(w).getDuration() < max_possible_duration ) {
-							if ( possible_durations_descr[i+instructions_available.get(w).getDuration()] == null ) {
-								start = System.currentTimeMillis();
-								possible_durations_descr[i+instructions_available.get(w).getDuration()] = new ArrayList<InstructionMetadata>(possible_durations_descr[i].size()+1);
-								for ( InstructionMetadata is : possible_durations_descr[i] ) {
+						if ( i+instructions_available.get(w).getDuration() < max_possible_duration &&
+							 possible_durations_descr[i+instructions_available.get(w).getDuration()] == null ) {
+								possible_durations_descr[i+instructions_available.get(w).getDuration()] = new ArrayList<InstructionData>(possible_durations_descr[i].size()+1);
+								for ( InstructionData is : possible_durations_descr[i] ) {
 									possible_durations_descr[i+instructions_available.get(w).getDuration()].add(is);
 								}
 								possible_durations_descr[i+instructions_available.get(w).getDuration()].add(instructions_available.get(w));
-								 end = System.currentTimeMillis();
-								 call_counter += end-start;
-							}
-								
 						}
-						else {
-							System.out.println("YOU need to increase the maximum_possible_duration current is "+max_possible_duration);
-						}
-						
 					}
 				}
 			}
@@ -703,20 +530,28 @@ public class CodeBuilder {
 			if ( possible_durations_descr[i] != null ) {
 				possible_durations[i] = new InstructionGroup(possible_durations_descr[i]);
 			}
-//			System.out.println("Of duration "+i+" :"+possible_durations[i]);
 		}
 		
 	}
 
+	/**
+	 * returns the longest possible duration with the current available instructions
+	 * @return - duration in T-states of the mP of the longest available instruction
+	 */
 	private int getMaximumInstructionDuration() {
-		int res = 0;
+		int res = 4;
 		if ( instructions_available == null ) return res;
-		for ( InstructionMetadata i : instructions_available ) {
+		for ( InstructionData i : instructions_available ) {
 			if ( i.getDuration() > res ) res = i.getDuration();
 		}
 		return res;
 	}
 	
+	/**
+	 * used to roughly estimate the number of loops we need to get a duration
+	 * @param elements - elements available for making loops, only the registers are of interest
+	 * @return int - the maximum such number - 0 if we can make no loops, known to cause overflow
+	 */
 	private int getMaximumNumberofIterationsWhenNestingLoops ( Elements elements ) {
 		int result = 1;
 		for ( int i = 0 ; i < 7/*we have 7 registers in 8085*/ ; ++i ) {
@@ -727,4 +562,25 @@ public class CodeBuilder {
 		return result;
 	}
 
+	/**
+	  * used to roughly estimate the number of loops we need to get a duration
+	 * @param elements - elements available for making loops, only the registers are of interest
+	 * @return duration in T-states of the mP, the longest we can get by nesting all loops available,0 if no loops
+	 */
+	private int getMaximumDurationWhenNestingLoops(Elements elements) {
+		return instruction_set.getLoopLogicInstructionsDuration(instruction_set.loop_type_8b)*getMaximumNumberofIterationsWhenNestingLoops(elements);
+	}
+	
+	/**
+	 * used when we determine do we need or not a loop in our function
+	 * @return - duration in T-states of the mP of the longest created loopless instruction sequence
+	 * by the method for precomputing the duration , 0 default
+	 */
+	private int getMaximumPossibleCreatedDuration() {
+		for ( int i = possible_durations.length-1 ; i >= 0 ; --i ) {
+			if ( possible_durations[i] != null )  return i;
+		}
+		return 0;
+	}
+	
 }
