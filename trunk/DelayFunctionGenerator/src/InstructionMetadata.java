@@ -30,6 +30,8 @@ public class InstructionMetadata {
 	
 	private Elements elements_affected;
 	
+	private boolean to_use;
+	
 	public InstructionMetadata () {
 		
 	}
@@ -45,14 +47,16 @@ public class InstructionMetadata {
 		duration = Integer.parseInt(tkr.nextToken().trim());
 		size = Integer.parseInt(tkr.nextToken().trim());
 		elements_affected = new Elements(tkr.nextToken().trim(), tkr.nextToken().trim(), tkr.nextToken().trim());
+		to_use = tkr.nextToken().trim().equals("-")?false:true;
 	}
 
 	public InstructionMetadata(String instruction_code, int duration, int size,
-			Elements elements_affected) {
+			Elements elements_affected , boolean to_use ) {
 		this.instruction_code = instruction_code;
 		this.duration = duration;
 		this.size = size;
 		this.elements_affected = elements_affected;
+		this.to_use = to_use;
 	}
 
 	
@@ -75,11 +79,58 @@ public class InstructionMetadata {
 	}
 	
 	/**
+	 * returns an Executable object representing this instruction,
+	 * usually this will be a single instruction
+	 * if there is some immediate data we need to replace, replace them we shall with random values
+	 * @return an executable - that corresponds to this instruction metadata
+	 */
+	public Executable getExecutable () {
+		Executable exec = null;
+		if ( instruction_code.contains("8b") ) {
+			exec = getExecutable("8b", Integer.toString((int)(Math.random()*(1<<8))));
+		} else if ( instruction_code.contains("16b") ) {
+			exec = getExecutable("16b", Integer.toString((int)(Math.random()*(1<<8))));
+		}
+		else {
+			exec = new Instruction(instruction_code,duration);
+		}
+		return exec;
+	}
+	
+	/**
+	 * returns an Executable object representing this instruction,
+	 * usually this will be a single instruction,
+	 * @param value - the int value to be set as the data
+	 * @return an executable - that corresponds to this instruction metadata
+	 * *IMPORTANT NOTICE: this method should be used for all instructions where we have some imidiate
+	 * data that needs to be set in the instruction code itself
+	 */
+	public Executable getExecutable ( String data_regex ,String value ) {
+		return new Instruction(instruction_code.replaceAll(data_regex,value),duration);
+	}
+	
+	/**
 	 * getters and setters
 	 */
 	
+	
+	
 	public String getInstruction_code() {
 		return instruction_code;
+	}
+
+	/**
+	 * @return the to_use
+	 */
+	public boolean isTo_use() {
+		return to_use;
+	}
+
+	/**
+	 * @param to_use the to_use to set
+	 */
+	public void setTo_use(boolean to_use) {
+		this.to_use = to_use;
 	}
 
 	public void setInstruction_code(String instruction_code) {
