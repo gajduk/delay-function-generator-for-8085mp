@@ -1,9 +1,8 @@
+package ukim.finki.mps.delay_fucntion_generator;
 import java.util.StringTokenizer;
 
-
-
 /**
- * used to represent the instruction constituting ones instructions set
+ * used to represent the instructions constituting ones instructions set
  * Completely describes one instruction by specifying the following information:
  * 
  * 1) instruction code as seen in assembler compiler
@@ -12,6 +11,7 @@ import java.util.StringTokenizer;
  * 4) REGS affected
  * 5) number of memory locations needed 0, or 2
  * 6) is the stack pointer read or changed, and/or is the stack contents changed
+ * 7) is this instruction free to be used from the auto-generating code builder
  *
  * the information 4-6 will be represented by a single object of the class Elements
  * 
@@ -20,28 +20,41 @@ import java.util.StringTokenizer;
  * @author Andrej Gajduk
  *
  */
-public class InstructionMetadata {
+public class InstructionData {
 	
+	/**
+	 * instruction code as seen in assembler compiler
+	 */
 	private String instruction_code;
 	
+	/**
+	 * duration in T states of the mP
+	 */
 	private int duration;
 	
+	/**
+	 * size in bytes
+	 */
 	private int size;
 	
+	/**
+	 * 4) REGS affected
+	 * 5) number of memory locations needed 0, or 2
+	 * 6) is the stack pointer read or changed, and/or is the stack contents changed
+	 */
 	private Elements elements_affected;
 	
+	/**
+	 * is this instruction free to be used from the auto-generating code builder
+	 */
 	private boolean to_use;
-	
-	public InstructionMetadata () {
-		
-	}
 	
 	/**
 	 * use this constructor to make an InstructionMetadata object from the description read from a text file
 	 * the format of the data represented is given in the text file
 	 * @param instruction_description - the one-line description of an instruction in specified format
 	 */
-	public InstructionMetadata ( String instruction_description ) {
+	public InstructionData ( String instruction_description ) {
 		StringTokenizer tkr = new StringTokenizer(instruction_description,";");
 		instruction_code = tkr.nextToken().trim();
 		duration = Integer.parseInt(tkr.nextToken().trim());
@@ -50,17 +63,6 @@ public class InstructionMetadata {
 		to_use = tkr.nextToken().trim().equals("-")?false:true;
 	}
 
-	public InstructionMetadata(String instruction_code, int duration, int size,
-			Elements elements_affected , boolean to_use ) {
-		this.instruction_code = instruction_code;
-		this.duration = duration;
-		this.size = size;
-		this.elements_affected = elements_affected;
-		this.to_use = to_use;
-	}
-
-	
-	
 	@Override
 	public String toString() {
 		/**
@@ -108,65 +110,7 @@ public class InstructionMetadata {
 	public Executable getExecutable ( String data_regex ,String value ) {
 		return new Instruction(instruction_code.replaceAll(data_regex,value),duration);
 	}
-	
-	/**
-	 * getters and setters
-	 */
-	
-	
-	
-	public String getInstruction_code() {
-		return instruction_code;
-	}
 
-	/**
-	 * @return the to_use
-	 */
-	public boolean isTo_use() {
-		return to_use;
-	}
-
-	/**
-	 * @param to_use the to_use to set
-	 */
-	public void setTo_use(boolean to_use) {
-		this.to_use = to_use;
-	}
-
-	public void setInstruction_code(String instruction_code) {
-		this.instruction_code = instruction_code;
-	}
-
-	/**
-	 * @return the duration
-	 */
-	public int getDuration() {
-		return duration;
-	}
-
-	/**
-	 * @param duration the duration to set
-	 */
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	public Elements getElements_affected() {
-		return elements_affected;
-	}
-
-	public void setElements_affected(Elements elements_affected) {
-		this.elements_affected = elements_affected;
-	}
-	
 	/**
 	 * a function used to separate available instructions from the whole instruction set,
 	 * it checks whether the given comparator object contains all the resources required for a given instruction to execute
@@ -175,6 +119,86 @@ public class InstructionMetadata {
 	 */
 	public boolean isAvailable ( Elements comparator ) {
 		return elements_affected.isAvailable(comparator);
+	}
+
+	
+	/**
+	 * @return the instruction_code
+	 */
+	public String getInstruction_code() {
+		return instruction_code;
+	}
+	
+
+	/**
+	 * @param instruction_code the instruction_code to set
+	 */
+	public void setInstruction_code(String instruction_code) {
+		this.instruction_code = instruction_code;
+	}
+	
+
+	/**
+	 * @return the duration
+	 */
+	public int getDuration() {
+		return duration;
+	}
+	
+
+	/**
+	 * @param duration the duration to set
+	 */
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+	
+
+	/**
+	 * @return the size
+	 */
+	public int getSize() {
+		return size;
+	}
+	
+
+	/**
+	 * @param size the size to set
+	 */
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+
+	/**
+	 * @return the elements_affected
+	 */
+	public Elements getElements_affected() {
+		return elements_affected;
+	}
+	
+
+	/**
+	 * @param elements_affected the elements_affected to set
+	 */
+	public void setElements_affected(Elements elements_affected) {
+		this.elements_affected = elements_affected;
+	}
+	
+
+	/**
+	 * @return the to_use
+	 */
+	public boolean isTo_use() {
+		return to_use;
+	}
+	
+
+	/**
+	 * @param to_use the to_use to set
+	 */
+	public void setTo_use(boolean to_use) {
+		this.to_use = to_use;
 	}
 
 }

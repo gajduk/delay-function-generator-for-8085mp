@@ -1,4 +1,13 @@
+package ukim.finki.mps.delay_fucntion_generator;
 
+/** represents a whole assembler function in the following format
+ * 
+ * init_instructions
+ * main_instructions
+ * finalize_instrucions
+ * return_instruction
+ * 
+ */
 public class DelayFunction extends Executable {
 	
 	/**
@@ -23,8 +32,6 @@ public class DelayFunction extends Executable {
 	 */
 	Executable return_instruction;
 	
-	
-
 	/**
 	 * how long will this function take to fully execute
 	 * the sum of the times for all instruction groups and loop in the function
@@ -40,8 +47,10 @@ public class DelayFunction extends Executable {
 		return result;
 	}
 
-
-
+	/**
+	 * how many instructions are in this function
+	 * @return number of instructions, the sum of all instructions in all 4 executables
+	 */
 	@Override
 	public int length() {
 		int result = 0;
@@ -59,7 +68,7 @@ public class DelayFunction extends Executable {
 		result += main_instructions != null?main_instructions.toString()+"\n":"";
 		result += finalize_instrucions != null?finalize_instrucions.toString()+"\n":"";
 		result += return_instruction != null?return_instruction.toString()+"\n":"";
-		return result;
+		return result.replaceAll("\n\n", "\n").replaceAll(":\n", ":");
 	}
 
 }

@@ -1,3 +1,4 @@
+package ukim.finki.mps.delay_fucntion_generator;
 
 /**
  * a single instruction defined in the instruction set manual
@@ -5,6 +6,7 @@
  *
  */
 public class Instruction extends Executable {
+	
 	/**
 	 * the code that fully describes this instruction
 	 */
@@ -37,7 +39,6 @@ public class Instruction extends Executable {
 		this.duration = duration;
 	}
 
-
 	/**
 	 * how long will this instruction take to fully execute,
 	 * because it's a single instruction just return the duration
@@ -56,12 +57,19 @@ public class Instruction extends Executable {
 		return instruction_code;
 	}
 
-
+	/**
+	 * how many instructions are in this instruction? one undoubtedly
+	 * @return number of instructions 
+	 */
 	@Override
 	public int length() {
 		return 1;
 	}
 	
+	/**
+	 * checks for equality with another instruction,
+	 * two instructions are proclaimed equal if the have the same instruction code
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if ( obj.getClass().equals(this.getClass() ) ) {
@@ -70,5 +78,4 @@ public class Instruction extends Executable {
 		return false;
 	}
 	
-
 }

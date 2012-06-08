@@ -1,3 +1,5 @@
+package ukim.finki.mps.delay_fucntion_generator;
+
 /**
  * a loop is defined:
  * 
@@ -75,18 +77,22 @@ public class Loop extends Executable {
 	public int iterations;
 	
 	/**
-	 * the time it takes this loop to execute
+	 * the time it takes this loop to fully execute
 	 * by constraining the instructions used in each instruction group
-	 * 
+	 * @return time in T-states of the mP
 	 */
 	@Override
 	public int time() {
 		int result = 0;
 		result += init_instructions!=null?init_instructions.time():0;
 		result += iterations*singleIterationTime();
-		return result;
+		return result-3;
 	}
 	
+	/**
+	 * the time it takes for a single iteration to execute
+	 * @return time in T-states of the mP
+	 */
 	public int singleIterationTime() {
 		int result = 0;
 		result += other_instructions!=null?other_instructions.time():0;
@@ -95,6 +101,11 @@ public class Loop extends Executable {
 		return result;
 	}
 
+	/**
+	 * how many instructions are there in this group
+	 * the sum of the times for all instructions in this group
+	 * @return the number of instructions
+	 */
 	@Override
 	public int length() {
 		int result = 0;
@@ -104,7 +115,6 @@ public class Loop extends Executable {
 		result += cond_instructions!=null?cond_instructions.length():0;
 		return result;
 	}
-
 	
 	@Override
 	public String toString() {

@@ -1,10 +1,11 @@
+package ukim.finki.mps.delay_fucntion_generator;
+
 /**
  * class that contains the data which instructions uses which resources of a mP system such as registers, memory and stack
  * This class is specialized for 8085, since the last update in specification stated that the project is not general but specific and native to 8085
  * @author Andrej Gajduk
  */
 public class Elements {
-	
 	
 	/**
 	 * all the elements that are affected by this instruction
@@ -58,19 +59,26 @@ public class Elements {
 	 */
 	private int e;
 	
-	/**
+	/*
 	 * the next three integer arrays are used to encrypt within a single integer all the information provided about a given instructions interaction with the elements of the 8085 system
 	 * such as registers, memory locations and stack,
 	 * only for internal use, as showed in the first constructor
 	 * 	 */
 	
+	/**
+	 * registers encoding as seen
+	 */
 	//                                               A   B   C   D   E    F    G   H    I   J   K   L  
 	private static final int[] register_encoding = { 1 , 2 , 4 , 8 , 16 , 0 , 0 , 32 , 0 , 0 , 0 , 64 };
 	
-	//  memory locations needed                    0     1     2
+	/**
+	 *   memory locations needed                    0     1     2
+	 */
 	private static final int[] memory_encoding = { 256 , 512 , 1024 };
 	
-	//  is stack needed 0 = no , 1 = yes          0   1
+	/**
+	 *  is stack needed 0 = no , 1 = yes          0   1
+	 */
 	private static final int[] stack_encoding = { 0 , 2048 };
 	
 	/**
@@ -130,7 +138,6 @@ public class Elements {
 			
 		}
 	}
-
 	
 	/**
 	 * to be used internally as a method that returns the integer value that needs to be added to the description encoding,
@@ -146,18 +153,22 @@ public class Elements {
 		return 0;
 	}
 
-	/*
-	 * geters and setters
+	/**
+	 * @return the e
 	 */
-	
 	public int getE() {
 		return e;
 	}
 
+	/**
+	 * @param e the e to set
+	 */
+	
 	public void setE(int e) {
 		this.e = e;
 	}
 	
+
 	/**
 	 * gives a nice detailed description of the resources used by an instruction
 	 */
@@ -194,10 +205,19 @@ public class Elements {
 		return (comparator.e&e) == e;
 	}
 
-	
+	/**
+	 * reverse mapping on which bit does which register corresponds
+	 */
 	private static final String registers[] = { "A" , "B" , "C" , "D" , "E" , "H" , "L" };
+	
+	/**
+	 * a function to determine which register corresponds to the bit-index in the e-integer
+	 * @param index - of a bit in the e-integer
+	 * @return - the register the bit at position index corresponds
+	 */
 	public String getRegister(int index) {
-		return registers[index];
+		if ( index >= 0 && index < registers.length )return registers[index];
+		return null;
 	}
 
 }

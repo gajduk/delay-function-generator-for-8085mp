@@ -1,3 +1,4 @@
+package ukim.finki.mps.delay_fucntion_generator;
 
 
 /**
@@ -6,6 +7,7 @@
  *
  */
 public class Element {
+	
 	/**
 	 * a description of the element,
 	 * for registers A , B etc
@@ -21,7 +23,14 @@ public class Element {
 	 */
 	String status;
 	
+	/**
+	 * define to be used when examining the status of an element
+	 */
 	public final static String available = "available";
+	
+	/**
+	 * define to be used when examining the status of an element
+	 */
 	public final static String not_available = "not_available";
 	
 	/**
@@ -30,12 +39,19 @@ public class Element {
 	 */
 	int type;
 	
-	
 	/**
-	 * defines to be used when determining the type of element in question
+	 * define to be used when determining the type of element in question
 	 */
 	public final static int REGISTER = 0;
+	
+	/**
+	 * define to be used when determining the type of element in question
+	 */
 	public final static int MEMORY = 1;
+	
+	/**
+	 * define to be used when determining the type of element in question
+	 */
 	public final static int STACK = 2;
 	
 	/**
