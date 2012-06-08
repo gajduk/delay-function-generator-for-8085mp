@@ -38,14 +38,14 @@ public class Loop extends Executable {
 	 *  does not influence significantly the time to execute the loop directly but by value,
 	 *  *IMPORTANT NOTICE: must be present for the loop to function properly
 	 */
-	Executable init_instructions;
+	public Executable init_instructions;
 	
 	/**
 	 * the instruction used to decrement a variable/register,
 	 * always use the DCR or DCX functions to limit the probability to end up with an endless loop
 	 * *IMPORTANT NOTICE: must be present for the loop to function properly
 	 */
-	Executable dcr_instructions;
+	public Executable dcr_instructions;
 	
 	/**
 	 * the instruction that will determine the end of the loop
@@ -54,25 +54,25 @@ public class Loop extends Executable {
 	 * then use the JNZ loop_start to get back in the loop for further processing 
 	 * *IMPORTANT NOTICE: must be present for the loop to function properly
 	 */
-	Executable cond_instructions;
+	public Executable cond_instructions;
 	
 	/**
 	 * other instruction used only to provide more time for the loop iterations
 	 * so we don't have too many nested loops,
 	 * use this as a better solution whenever possible
 	 */
-	Executable other_instructions;
+	public Executable other_instructions;
 
 	/**
 	 * just a label for where the loop starts
 	 */
-	String label;
+	public String label;
 	
 	/**
 	 * the number of iterations this loops is supposed to process through before exiting,
 	 * this value is the same as the init value in the init_instrucion
 	 */
-	private int iterations;
+	public int iterations;
 	
 	/**
 	 * the time it takes this loop to execute

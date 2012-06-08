@@ -31,13 +31,10 @@ public class InstructionGroup extends Executable {
 	 */
 	public InstructionGroup ( ArrayList instuctions ) {
 		this.instuctions = new ArrayList<Executable>(instuctions.size());
-		if ( instuctions.size() < 0 ) return;
+		if ( instuctions == null || instuctions.size() < 0 ) return;
 		if ( instuctions.get(0).getClass() == InstructionMetadata.class ) {
 			for ( Object is : instuctions ) {
-				String instruction_code = ((InstructionMetadata) is).getInstruction_code();
-				instruction_code = instruction_code.replaceAll("8b", Integer.toString((int)(Math.random()*(1<<8))));
-				instruction_code = instruction_code.replaceAll("16b", Integer.toString((int)(Math.random()*(1<<16))));
-				this.instuctions.add(new Instruction(instruction_code));
+				this.instuctions.add(((InstructionMetadata) is).getExecutable());
 			}
 		}
 		else {
@@ -68,7 +65,7 @@ public class InstructionGroup extends Executable {
 		if ( instuctions == null || instuctions.size() == 0 ) return 0;
 		int total_time = 0;
 		for ( Executable e : instuctions ) {
-			total_time += e.time();
+			total_time += e == null ?0:e.time();
 		}
 		return total_time;
 	}
@@ -78,16 +75,54 @@ public class InstructionGroup extends Executable {
 		if ( instuctions == null ) return "ERROR null value found";
 		if ( instuctions.size() == 0 ) return "NO INSTRUCTIONS. EMPTY GROUP";
 		String res = "";
+		boolean flag = true;
 		for ( Executable i : instuctions ) {
-			res += " "+ i.toString() + " ; ";
+			if ( flag ) {
+				flag = false;
+			}
+			else {
+				res += "\n";
+			}
+			res += i.toString() ;
 		}
 		return res;
 	}
 
 
+	/**
+	 * how many instructions are there in this group
+	 * the sum of the times for all instructions in this group
+	 * @return the number of instructions
+	 */
 	@Override
 	public int length() {
-		return instuctions == null ? 0 : instuctions.size();
+		if ( instuctions == null || instuctions.size() == 0 ) return 0;
+		int total_length = 0;
+		for ( Executable e : instuctions ) {
+			total_length += e == null ?0:e.length();
+		}
+		return total_length;
+	}
+
+
+	public void append(Executable exec) {
+		if ( instuctions == null ) {
+			instuctions = new ArrayList<Executable>();
+		}
+		instuctions.add(exec);	
+	}
+
+
+	public void insert(Executable exec) {
+		if ( instuctions == null ) {
+			instuctions = new ArrayList<Executable>();
+		}
+		instuctions.add(0, exec);
+	}
+
+
+	public boolean contains(Executable exec) {
+		return instuctions.contains(exec);
 	}
 
 }

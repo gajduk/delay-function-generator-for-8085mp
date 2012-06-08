@@ -185,7 +185,9 @@ public class InstructionSet {
 		return 0;
 	}
 
+	
 	public InstructionMetadata getInstruction(String string) {
+		
 		for ( InstructionMetadata ins : instructions ) {
 			if ( ins.getInstruction_code().equals(string) )
 				return ins;

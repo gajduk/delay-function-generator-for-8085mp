@@ -55,10 +55,10 @@ public class DelayFunction extends Executable {
 	@Override
 	public String toString() {
 		String result = "";
-		result += init_instructions != null?init_instructions.toString():"";
-		result += main_instructions != null?main_instructions.toString():"";
-		result += finalize_instrucions != null?finalize_instrucions.toString():"";
-		result += return_instruction != null?return_instruction.toString():"";
+		result += init_instructions != null?init_instructions.toString()+"\n":"";
+		result += main_instructions != null?main_instructions.toString()+"\n":"";
+		result += finalize_instrucions != null?finalize_instrucions.toString()+"\n":"";
+		result += return_instruction != null?return_instruction.toString()+"\n":"";
 		return result;
 	}
 

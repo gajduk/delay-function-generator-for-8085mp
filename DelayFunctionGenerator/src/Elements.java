@@ -17,9 +17,8 @@ public class Elements {
 	 *  2 | C
 	 *  3 | D
 	 *  4 | E
-	 *  5 | F
-	 *  6 | H
-	 *  7 | L
+	 *  5 | H
+	 *  6 | L
 	 *  
 	 *  bits 8-10 represent the number of memory locations required to be allowed access to by the instruction
 	 *  bit|number of memory location
@@ -66,7 +65,7 @@ public class Elements {
 	 * 	 */
 	
 	//                                               A   B   C   D   E    F    G   H    I   J   K   L  
-	private static final int[] register_encoding = { 1 , 2 , 4 , 8 , 16 , 32 , 0 , 64 , 0 , 0 , 0 , 128 };
+	private static final int[] register_encoding = { 1 , 2 , 4 , 8 , 16 , 0 , 0 , 32 , 0 , 0 , 0 , 64 };
 	
 	//  memory locations needed                    0     1     2
 	private static final int[] memory_encoding = { 256 , 512 , 1024 };
@@ -97,9 +96,10 @@ public class Elements {
 	 */
 	public Elements ( Element elements_usable[] ) {
 		e = 0;
-		if ( elements_usable == null || elements_usable.length == 0 ) return;
 		int memory_locations_counter = 0;
 		e += memory_encoding[memory_locations_counter++];
+		if ( elements_usable == null || elements_usable.length == 0 ) return;
+		
 		for ( Element el  : elements_usable ) {
 			if ( el.type == Element.REGISTER ) {
 				if ( el.status.equals(Element.available) ) {
@@ -192,6 +192,12 @@ public class Elements {
 	 */
 	public boolean isAvailable ( Elements comparator ) {
 		return (comparator.e&e) == e;
+	}
+
+	
+	private static final String registers[] = { "A" , "B" , "C" , "D" , "E" , "H" , "L" };
+	public String getRegister(int index) {
+		return registers[index];
 	}
 
 }
