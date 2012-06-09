@@ -38,8 +38,8 @@ public class DelayFunction extends Executable {
 	 * @return time in T - number of states of the mP
 	 */
 	@Override
-	public int time() {
-		int result = 0;
+	public long time() {
+		long result = 0;
 		result += init_instructions != null?init_instructions.time():0;
 		result += main_instructions != null?main_instructions.time():0;
 		result += finalize_instrucions != null?finalize_instrucions.time():0;

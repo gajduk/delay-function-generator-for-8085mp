@@ -82,8 +82,8 @@ public class Loop extends Executable {
 	 * @return time in T-states of the mP
 	 */
 	@Override
-	public int time() {
-		int result = 0;
+	public long time() {
+		long result = 0;
 		result += init_instructions!=null?init_instructions.time():0;
 		result += iterations*singleIterationTime();
 		return result-3;
@@ -93,8 +93,8 @@ public class Loop extends Executable {
 	 * the time it takes for a single iteration to execute
 	 * @return time in T-states of the mP
 	 */
-	public int singleIterationTime() {
-		int result = 0;
+	public long singleIterationTime() {
+		long result = 0;
 		result += other_instructions!=null?other_instructions.time():0;
 		result += dcr_instructions!=null?dcr_instructions.time():0;
 		result += cond_instructions!=null?cond_instructions.time():0;

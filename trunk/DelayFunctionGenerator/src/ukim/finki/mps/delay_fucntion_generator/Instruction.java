@@ -45,7 +45,7 @@ public class Instruction extends Executable {
 	 * @return time in T - number of states of the mP
 	 */
 	@Override
-	public int time() {
+	public long time() {
 		if ( duration == duration_not_set ) {
 			System.out.println("You just read an unset duration of the instruction "+instruction_code+" any further calculations is wrong");
 		}

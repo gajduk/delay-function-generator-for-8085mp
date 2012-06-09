@@ -56,11 +56,11 @@ public class CodeBuilder {
 	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
 	 * **further notice: the error allowed for the duration of the delay function should be reverse-proportional to the interval size		
 	 */
-	private DelayFunction buildDelayFunction ( int min_time , int max_time , String mP , Element elements_usable[] , DelayFunction res ) {
+	private DelayFunction buildDelayFunction ( long min_time , long max_time , String mP , Element elements_usable[] , DelayFunction res ) {
 		setInstructionSet(mP);
-		int n = getMaximumNumberofIterationsWhenNestingLoops(new Elements(elements_usable));
-		int k = getMaximumDurationWhenNestingLoops(new Elements(elements_usable));
-		int l = (min_time-k) / (n*4);
+		long n = getMaximumNumberofIterationsWhenNestingLoops(new Elements(elements_usable));
+		long k = getMaximumDurationWhenNestingLoops(new Elements(elements_usable));
+		int l = (int) ((min_time-k) / (n*4));
 		int loop_instructions = (int) ( Math.log(n)/ Math.log(256) ) * 3;
 		// do the math if it can't be done tell the user to go f.ck himself
 		if ( res == null ) {
@@ -156,6 +156,7 @@ public class CodeBuilder {
 		
 		min_time -= res.time();
 		max_time -= res.time();
+		if ( max_time < 0 ) return null;
 		while ( true ) {
 			res.main_instructions = buildDelayFunction(min_time, max_time, elements_usable,instruction_limit);
 			if ( res.main_instructions != null ) break;
@@ -167,7 +168,7 @@ public class CodeBuilder {
 	/**
 	 * just used to set the default value of res to null
 	 */
-	public DelayFunction buildDelayFunction ( int min_time , int max_time , String mP , Element elements_usable[] ) {
+	public DelayFunction buildDelayFunction ( long min_time , long max_time , String mP , Element elements_usable[] ) {
 		return buildDelayFunction(min_time,max_time,mP,elements_usable,null);
 	}
 		
@@ -175,10 +176,10 @@ public class CodeBuilder {
 	 * for this function to work the precomputeAllPossibledurations to have been called before
 	 * @return - an Executable that has duration in the interval [min_time,max_time]
 	 */
-	private Executable getInstructionsForDuration ( int min_time , int max_time ) {
+	private Executable getInstructionsForDuration ( long min_time , long max_time ) {
 		if ( max_time < 0 ) return null;
 		if ( min_time < 0 ) min_time = 0;
-		for ( int i = min_time ; i <= max_time ; ++i ) {
+		for ( int i = (int) min_time ; i <= max_time ; ++i ) {
 			if ( possible_durations[i] != null ) {
 				return possible_durations[i];
 			}
@@ -204,7 +205,7 @@ public class CodeBuilder {
 	 * *further notice: the default instruction limit should be dependent on the duration of the delay function required
 	 * **further notice: the error allowed for the duration of the delay function should be reverse-proportional to the interval size		
 	 */
-	private Executable buildDelayFunction ( int min_time , int max_time , Element elements_usable[] , int instruction_limit ) {
+	private Executable buildDelayFunction ( long min_time , long max_time , Element elements_usable[] , int instruction_limit ) {
 		precomputeAllPossibleDurations(elements_usable,instruction_limit);	
 		Executable exec = null;
 		
@@ -236,7 +237,7 @@ public class CodeBuilder {
 	 * this should be dealt with in some other manner in the future, perhaps migrate it to the InstructionSet somehow
 	 * or create an AbstractBuilder
 	 */
-	private Executable buildLoop ( int min_time, int max_time, Element elements_usable[] , int instruction_limit , int nested_loops_counter ) {
+	private Executable buildLoop ( long min_time, long max_time, Element elements_usable[] , int instruction_limit , int nested_loops_counter ) {
 		/*
 		 * 8085 manual reference:
 		 * there will be two loop structures:
@@ -291,8 +292,8 @@ public class CodeBuilder {
 			case_two = true;
 		}
 		//memorize some of the parameters, cause we will change them
-		int temp_min_time = min_time;
-		int temp_max_time = max_time;
+		long temp_min_time = min_time;
+		long temp_max_time = max_time;
 		
 		//the loops structure instructions are a must so we need to subtract them, conveniently they are the same in both cases so do that here
 		instruction_limit -= 3;
@@ -310,7 +311,7 @@ public class CodeBuilder {
 			min_time -= init_instruction_duration;
 			max_time -= init_instruction_duration;
 			int min_iterations = 2;
-			int max_iterations = (1<<16)-1>max_time/loop_logic_instructions_duration ? max_time/loop_logic_instructions_duration:(1<<16)-1;
+			int max_iterations = (int) ((1<<16)-1>max_time/loop_logic_instructions_duration ? max_time/loop_logic_instructions_duration:(1<<16)-1);
 			
 			
 			//we have already decided which elements to use to get the loop logic so remove them from the list of available elements
@@ -345,7 +346,7 @@ public class CodeBuilder {
 			min_time -= init_instruction_duration;
 			max_time -= init_instruction_duration;
 			int min_iterations = 2;
-			int max_iterations = (1<<8)-1<max_time/loop_logic_instructions_duration ? (1<<8)-1 : max_time/loop_logic_instructions_duration;
+			int max_iterations = (int) ((1<<8)-1<max_time/loop_logic_instructions_duration ? (1<<8)-1 : max_time/loop_logic_instructions_duration);
 			
 			
 			//we have already decided which elements to use to get the loop logic so remove them from the list of available elements
@@ -395,14 +396,14 @@ public class CodeBuilder {
 	 * @param loop_type - the type of the loop we are trying to build - 8 bit or 16 bit
 	 * @return
 	 */
-	private Loop buildLoopByDeterminingInitValue ( int min_iterations , int max_iterations , int min_time , int max_time , 
+	private Loop buildLoopByDeterminingInitValue ( int min_iterations , int max_iterations , long min_time , long max_time , 
 												  Element elements_usable[] , int instruction_limit , 
 												  int nested_loops_counter ,  String reg_or_reg_pair , int loop_type ) {
 		String label = "loop"+nested_loops_counter;
 		for ( int num_iterations = max_iterations  ; num_iterations >= min_iterations  ; --num_iterations ) {
 			//we need to check for round-off errors in duration, can we afford them
-			int next_min_time = min_time/num_iterations+((min_time%num_iterations)==0?0:1);
-			int next_max_time = max_time/num_iterations;
+			long next_min_time = min_time/num_iterations+((min_time%num_iterations)==0?0:1);
+			long next_max_time = max_time/num_iterations;
 			if ( next_min_time <= next_max_time ) {
 				//it just may work so go for it, first by subtracting the loop_logic_instructions_duration 
 				int loop_logic_instructions_duration = instruction_set.getLoopLogicInstructionsDuration(loop_type);
@@ -552,8 +553,8 @@ public class CodeBuilder {
 	 * @param elements - elements available for making loops, only the registers are of interest
 	 * @return int - the maximum such number - 0 if we can make no loops, known to cause overflow
 	 */
-	private int getMaximumNumberofIterationsWhenNestingLoops ( Elements elements ) {
-		int result = 1;
+	private long getMaximumNumberofIterationsWhenNestingLoops ( Elements elements ) {
+		long result = 1;
 		for ( int i = 0 ; i < 7/*we have 7 registers in 8085*/ ; ++i ) {
 			if ( (1<<i&elements.getE()) > 0 ) {
 				result *= 256;
@@ -567,7 +568,7 @@ public class CodeBuilder {
 	 * @param elements - elements available for making loops, only the registers are of interest
 	 * @return duration in T-states of the mP, the longest we can get by nesting all loops available,0 if no loops
 	 */
-	private int getMaximumDurationWhenNestingLoops(Elements elements) {
+	private long getMaximumDurationWhenNestingLoops(Elements elements) {
 		return instruction_set.getLoopLogicInstructionsDuration(instruction_set.loop_type_8b)*getMaximumNumberofIterationsWhenNestingLoops(elements);
 	}
 	
