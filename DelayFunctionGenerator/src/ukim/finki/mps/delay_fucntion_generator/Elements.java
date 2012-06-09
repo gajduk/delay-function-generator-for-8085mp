@@ -109,6 +109,7 @@ public class Elements {
 		if ( elements_usable == null || elements_usable.length == 0 ) return;
 		
 		for ( Element el  : elements_usable ) {
+			if ( el == null ) continue;
 			if ( el.type == Element.REGISTER ) {
 				if ( el.status.equals(Element.available) ) {
 					char c = el.description.charAt(0);
@@ -125,9 +126,11 @@ public class Elements {
 			}
 			else {
 			if ( el.type == Element.STACK ) {
-				if ( (e&stack_encoding[1]) == 0 ) {
-					if ( el.status.equals(Element.available) ) {
-						e += stack_encoding[1];
+				if ( el.description.equals("not valid stack") ) {
+					if ( (e&stack_encoding[1]) == 0 ) {
+						if ( el.status.equals(Element.available) ) {
+							e += stack_encoding[1];
+						}
 					}
 				}
 			}

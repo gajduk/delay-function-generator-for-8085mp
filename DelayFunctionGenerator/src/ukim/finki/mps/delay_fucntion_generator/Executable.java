@@ -20,7 +20,7 @@ public abstract class Executable {
 	 * how long will this take to fully execute
 	 * @return time in T- number of states of the mP
 	 */
-	public abstract int time();
+	public abstract long time();
 
 	/**
 	 * how many instructions are in this executable

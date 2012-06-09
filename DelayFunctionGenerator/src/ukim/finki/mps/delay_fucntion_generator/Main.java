@@ -2,7 +2,7 @@ package ukim.finki.mps.delay_fucntion_generator;
 
 public class Main {
 
-
+/*
 	public static void main(String[] args) {
 		CodeBuilder c = new CodeBuilder();
 		Element elements_usable[] = {   new Element(Element.REGISTER,"A"),
@@ -17,5 +17,5 @@ public class Main {
 		long end = System.currentTimeMillis();
 		System.out.println("Time taken: "+(end-start)/1000+"."+(end-start)%1000+" s.");
 	}
-
+*/
 }

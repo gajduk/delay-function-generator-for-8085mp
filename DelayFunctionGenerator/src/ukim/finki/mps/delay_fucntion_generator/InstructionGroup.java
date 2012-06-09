@@ -58,9 +58,9 @@ public class InstructionGroup extends Executable {
 	 * @return time in T- number of states of the mP
 	 */
 	@Override
-	public int time() {
+	public long time() {
 		if ( instuctions == null || instuctions.size() == 0 ) return 0;
-		int total_time = 0;
+		long total_time = 0;
 		for ( Executable e : instuctions ) {
 			total_time += e == null ?0:e.time();
 		}
