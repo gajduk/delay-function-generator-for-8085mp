@@ -9,9 +9,6 @@ import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
-
-import ukim.finki.mps.delay_fucntion_generator.CodeBuilder;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
@@ -36,6 +33,15 @@ import javax.swing.JFrame;
  * The application's main frame.
  */
 public class DesktopApplication1View extends FrameView {
+	
+	public void logAppend( String s ) {
+		String c = txtMessages.getText();
+		txtMessages.setText(c+" "+s);
+	}
+	
+	public void log( String s ) {
+		txtMessages.setText(s);
+	}
 
     public DesktopApplication1View(SingleFrameApplication app) {
         super(app);
@@ -43,6 +49,7 @@ public class DesktopApplication1View extends FrameView {
         initComponents();
         getFrame().setResizable(false);
         jRadioButton1.setSelected(true);
+        RET.setSelected(true);
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -104,7 +111,7 @@ public class DesktopApplication1View extends FrameView {
     	
     }
 
-    private void initComponents() {
+      private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -119,6 +126,8 @@ public class DesktopApplication1View extends FrameView {
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
+        RET = new javax.swing.JCheckBox();
+        jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         lstMemory = new javax.swing.JList();
@@ -211,6 +220,12 @@ public class DesktopApplication1View extends FrameView {
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        RET.setText(resourceMap.getString("RET.text")); // NOI18N
+        RET.setName("RET"); // NOI18N
+
+        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -218,10 +233,6 @@ public class DesktopApplication1View extends FrameView {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(A)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -237,13 +248,21 @@ public class DesktopApplication1View extends FrameView {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(C)
                                 .addComponent(E)
-                                .addComponent(L))
-                            .addGap(35, 35, 35))))
+                                .addComponent(L))))
+                    .addComponent(RET)
+                    .addComponent(jRadioButton2)
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton1)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(A)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -257,7 +276,9 @@ public class DesktopApplication1View extends FrameView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(L)
                     .addComponent(H))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(RET)
+                .addGap(34, 34, 34)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jRadioButton2)
@@ -315,20 +336,12 @@ public class DesktopApplication1View extends FrameView {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtMemory, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
-                        .addContainerGap())))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(txtMemory, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -344,7 +357,7 @@ public class DesktopApplication1View extends FrameView {
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -469,11 +482,10 @@ public class DesktopApplication1View extends FrameView {
                         .addComponent(txtnSecs, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtStateDuration, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(txtStateDuration, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -522,7 +534,8 @@ public class DesktopApplication1View extends FrameView {
                 .addContainerGap()
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE))
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 734, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -588,7 +601,7 @@ public class DesktopApplication1View extends FrameView {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -660,11 +673,11 @@ public class DesktopApplication1View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 689, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 712, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -685,7 +698,7 @@ public class DesktopApplication1View extends FrameView {
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
-    }// </editor-fold>
+    }
 
     private long convertTostates() {
         int days = 0;//Integer.parseInt((txtDays.getText()==null||txtDays.getText().length()==0)?"0":txtDays.getText());
@@ -709,83 +722,97 @@ public class DesktopApplication1View extends FrameView {
     }
     
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
-    	System.out.println("HERE");
         //call the function from here
-    	long time = convertTostates();
-        ArrayList<ukim.finki.mps.delay_fucntion_generator.Element> elements_available = new ArrayList<ukim.finki.mps.delay_fucntion_generator.Element>();
-        if ( A.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"A"));
+    	try {
+	    	long time = convertTostates();
+	        ArrayList<ukim.finki.mps.delay_function_generator.Element> elements_available = new ArrayList<ukim.finki.mps.delay_function_generator.Element>();
+	        if ( A.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"A"));
+	        }
+	        if ( B.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"B"));
+	        }
+	        if ( C.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"C"));
+	        }
+	        if ( D.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"D"));
+	        }
+	        if ( E.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"E"));
+	        }
+	        if ( H.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"H"));
+	        }
+	        if ( L.isSelected() ) {
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.REGISTER	,"L"));
+	        }
+	        if ( jRadioButton2.isSelected() ) {
+	        	//use it
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.STACK	,ukim.finki.mps.delay_function_generator.Element.STACK_VALID));
+	            
+	        }
+	        if ( jRadioButton3.isSelected() ) {
+	        	//use the commands
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.STACK	,ukim.finki.mps.delay_function_generator.Element.STACK_NOT_VALID));   
+	        }
+	        if ( jRadioButton1.isSelected() ) {
+	        	//forget the stack
+	        }
+	     // Get number of items in the list
+	        int size = lstMemory.getModel().getSize(); // 4
+	
+	        // Get all item objects
+	        for (int i=0; i<size; i++) {
+	            String location = lstMemory.getModel().getElementAt(i).toString();
+	        	elements_available.add(new ukim.finki.mps.delay_function_generator.Element(ukim.finki.mps.delay_function_generator.Element.MEMORY,location));   
+	            
+	        }
+	        ukim.finki.mps.delay_function_generator.CodeBuilder c = new ukim.finki.mps.delay_function_generator.CodeBuilder();
+	        long plus_time = 0; 
+	        String plus_s = txtErrorPlus.getText();
+	        if ( plus_s.contains("%") ) {
+	        	double plus = Double.parseDouble(plus_s.replaceAll("%",""));
+	        	plus_time = (long) (plus*(double)time*0.01);            
+	        }
+	        else {
+	        	plus_time = Long.parseLong(plus_s);
+	        }
+	        long minus_time = 0; 
+	        String minus_s = txtErrorMinus.getText();
+	        if ( plus_s.contains("%") ) {
+	        	double minus = Double.parseDouble(minus_s.replaceAll("%",""));
+	        	minus_time = (long) (minus*(double)time*0.01);            
+	        }
+	        else {
+	        	minus_time = Long.parseLong(minus_s);
+	        }
+	        
+	        long start = System.currentTimeMillis();
+	        log("started generating");
+	        ukim.finki.mps.delay_function_generator.DelayFunction d = c.buildDelayFunction(time-minus_time,time+plus_time,
+	        		"8085", (ukim.finki.mps.delay_function_generator.Element[]) elements_available.toArray(new ukim.finki.mps.delay_function_generator.Element[1])
+	        		, RET.isSelected());
+	        
+	        long end = System.currentTimeMillis();
+	        log("Finished generating in t="+(end-start)/1000+"."+(end-start)%1000+" s.");
+	        if ( d == null ) {
+	        	log("Can't generate such a function.");
+	        	logAppend(" Possible reasons");
+	        	logAppend("\n\t--low fault tolerance");
+	        	logAppend("\n\t--too short duration to make a function");
+	        	logAppend("\n\t--not enough free resources. Release some registers");
+	        	logAppend("\n\t--the generator is just not willing to cooperate");
+	        }
+	        else {
+	        	txtCode.setText(d.toString());
+	        	logAppend("\nThe function lasts exactly: "+d.time()+" states");
+	        }
+    	}
+        catch ( Exception ex ) {
+        	log("Numbers only:"+ex.getMessage());
         }
-        if ( B.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"B"));
-        }
-        if ( C.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"C"));
-        }
-        if ( D.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"D"));
-        }
-        if ( E.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"E"));
-        }
-        if ( H.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"H"));
-        }
-        if ( L.isSelected() ) {
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.REGISTER	,"L"));
-        }
-        if ( jRadioButton2.isSelected() ) {
-        	//use it
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.STACK	,"valid stack"));
-            
-        }
-        if ( jRadioButton3.isSelected() ) {
-        	//use the commands
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.STACK	,"not valid stack"));   
-        }
-        if ( jRadioButton1.isSelected() ) {
-        	//forget the stack
-        }
-     // Get number of items in the list
-        int size = lstMemory.getModel().getSize(); // 4
-
-        // Get all item objects
-        for (int i=0; i<size; i++) {
-            String location = lstMemory.getModel().getElementAt(i).toString();
-        	elements_available.add(new ukim.finki.mps.delay_fucntion_generator.Element(ukim.finki.mps.delay_fucntion_generator.Element.MEMORY,location));   
-            
-        }
-        ukim.finki.mps.delay_fucntion_generator.CodeBuilder c = new CodeBuilder();
-        long plus_time = 0; 
-        String plus_s = txtErrorPlus.getText();
-        if ( plus_s.contains("%") ) {
-        	double plus = Double.parseDouble(plus_s.replaceAll("%",""));
-        	plus_time = (long) (plus*(double)time*0.01);            
-        }
-        else {
-        	plus_time = Long.parseLong(plus_s);
-        }
-        long minus_time = 0; 
-        String minus_s = txtErrorMinus.getText();
-        if ( plus_s.contains("%") ) {
-        	double minus = Double.parseDouble(minus_s.replaceAll("%",""));
-        	minus_time = (long) (minus*(double)time*0.01);            
-        }
-        else {
-        	minus_time = Long.parseLong(minus_s);
-        }
-        
-        ukim.finki.mps.delay_fucntion_generator.DelayFunction d = c.buildDelayFunction(time-minus_time,time+minus_time, "8085", (ukim.finki.mps.delay_fucntion_generator.Element []) elements_available.toArray(new ukim.finki.mps.delay_fucntion_generator.Element[1]));
-        System.out.println(d.time());
-        if ( d == null ) {
-        	
-        }
-        else {
-        	txtCode.setText(d.toString());
-        }
-        
     }
-
     
     private ArrayList<String> list_data = new ArrayList<String>();
     private void jButton1ActionPerformed(ActionEvent evt) {
@@ -891,6 +918,7 @@ public class DesktopApplication1View extends FrameView {
     private javax.swing.JTextField txtStates;
     private javax.swing.JTextField txtmSecs;
     private javax.swing.JTextField txtnSecs;
+    private javax.swing.JCheckBox RET;
     // End of variables declaration
 
     private final Timer messageTimer;

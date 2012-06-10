@@ -1,0 +1,34 @@
+The CodeBuilder is where the magic happens.
+
+The procces is complex but here goes a simple description:
+
+1)we estimate the number of instructions we need given the current resources
+2)if this number is high (40-50) we try to shuffle round with the resources 
+	by pushing register values on stack or saving them in memory
+	*we make sure to restore their value back at the end of the code.
+	2.1)if we can't, we quit
+3)we put in the must have instructions like pushes, pops and return and modify the time the code needs to execute
+4) for ( instruction_limit = least_possible ; < 50 ; ++ ), we try with every possible instruction limit to generate code in the following manner
+
+building code:
+6)we make all possible combinations with the instructions without loops
+7)if we have the required duration we use it, otherwise we try building a loop, or quit
+
+building a loop:
+8)try making the loops with all possible combinations of instructions, starting with 'no instruction' while still 
+leaving enough instructions (three for the loop logic)
+9)we see what resources we have available in registers or register pairs for the loop logic
+10)using those resources we try making a loop with a specific number of iterations in the interval [min=2,max=estimate]
+11) for each number of iterations we try generating the code in the loop aside from the loop logic,
+ (the some_instructions in the example bellow) we recursively start again from step 5)
+
+
+
+loop example:
+     MVI A,54
+loop:some_isntructions..
+     DCR A
+     JNZ loop
+
+*loop logic - the instructions needed to make loops
+see the Loop-class documentation, 

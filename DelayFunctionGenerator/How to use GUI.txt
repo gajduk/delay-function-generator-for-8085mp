@@ -1,0 +1,42 @@
+The GUI always works with 8085.
+Specify the duration in the text-boxes at top.
+You can put 100 in seconds you don't have to put 1 min and 40 seconds.
+All must be numbers.
+
+In the error toleration box put in how manu states error from the desired is accceptable
+to you. You can use percentiles or plain numbers of states.
+**You should always give some tolerance.
+
+Don't change the state lasting box unless you know what are you doing.
+
+In the registers&Stack panel you will find a lot of check boxes.
+
+Check those registers that you don't care what happens to, their value may and will be changed
+in the code generated.
+
+Check the RET? box if you want a return instruction at the end of the code.
+(if you are making a function that will be called from your main routine).
+
+Explanation for the stack buttons:
+--use it - means the code will perform pushes and pops whenever neccecary.
+**the SP value will be the same at the end of the code as it was at the begining
+--use the commands - means the stack is not valid, no pushes or pops will be done
+, but however some comands that affect the SP will be used.
+**No guarantees for the SP value.
+--don't touch the stack - the code will not change SP nor use any pushes or pops
+
+Explanation for the memory locations.
+IMPORTANT:Use only numbers as valid locations in the address space 0-65535.
+The code will only ubenefit of up to 7-8 memory addresses, no need to put any more.
+
+the value on this memory addresses will probably change in the generated code.
+
+MAX VALUE:
+states=~9 * 10^20
+meaning with 200 ns for state
+hours=~5 * 10^11
+however please stick to some smaller values.
+
+The messeges box will give you information about the procces of generating and errors it enocunters in you input.
+
+
