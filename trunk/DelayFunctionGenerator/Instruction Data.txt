@@ -1,0 +1,280 @@
+
+/**
+the data consist of the following
+by columns, all separated by ';' - quotes for clarity only
+01) string - instruction code as seen in assembler compiler
+*Important notice: some instructions have values writen in the instruction opcode itself,
+for example the MVI R,data instruction, for these instructions on the place where the data needs to be included the following code should be put
+MVI R,8b for 8bit data expected, or
+LXI R,16b for 16 bit data expected
+02) number - length in T states
+03) number - size in bytes
+04) string - registers affected 
+* - stands for none, must not be ommited
+Not-separated by anything you should write them concatenated for example:
+instruction
+XTHL - registers <=> 'HL' - quotes for clarity only
+*Important notice: only the affected registers are mentioned, 
+for example in the MOV A,B the register B is not 
+affected and should not be mentioned because we do not change its value (contents)
+05) number - of memory locations needed 0,1 or 2 are the only possible values
+06) number - is stack needed 0 meaning no, 1 meaning yes
+07) char - is the program to use when autoamticly generating code - meaning no, + meaning yes
+
+FINAL NOTICE: all the data should be placed within a BEGIN --- END block
+each instruction should be in only one, and exactly one line
+*/
+
+BEGIN
+
+ACI 8b    ;  7 ; 2 ; A    ; 0 ; 0 ; + ;
+
+ADC A     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC B     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC C     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC D     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC E     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC F     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC H     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+ADC L     ;  4 ; 2 ; A    ; 0 ; 0 ; + ;
+
+ADD A     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD B     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD C     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD D     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD E     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD F     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD H     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ADD L     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+
+ACI 8b    ;  7 ; 2 ; A    ; 0 ; 0 ; + ;
+
+ANA A     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ANA B     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ANA C     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ANA D     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ANA E     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ANA F     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+ANA H     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+
+ANI 8b    ;  7 ; 2 ; A    ; 0 ; 0 ; + ;
+
+CMA       ;  4 ; 1 ; A    ; 0 ; 0 ; + ;     
+
+CMC       ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+
+CMP A     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP B     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP C     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP D     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP E     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP F     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP H     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+CMP L     ;  4 ; 1 ; *    ; 0 ; 0 ; + ;
+
+CPI 8b    ;  7 ; 2 ; *    ; 0 ; 0 ; + ;
+
+DAA       ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+
+DAD B    ; 10 ; 3 ; HL   ; 0 ; 0 ; + ;
+DAD DE    ; 10 ; 3 ; HL   ; 0 ; 0 ; + ;
+DAD HL    ; 10 ; 3 ; HL   ; 0 ; 0 ; + ;
+DAD SP    ; 10 ; 3 ; HL   ; 0 ; 1 ; + ;
+
+DCR A     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+DCR B     ;  4 ; 1 ; B    ; 0 ; 0 ; + ;
+DCR C     ;  4 ; 1 ; C    ; 0 ; 0 ; + ;
+DCR D     ;  4 ; 1 ; D    ; 0 ; 0 ; + ;
+DCR E     ;  4 ; 1 ; E    ; 0 ; 0 ; + ;
+DCR F     ;  4 ; 1 ; F    ; 0 ; 0 ; + ;
+DCR H     ;  4 ; 1 ; H    ; 0 ; 0 ; + ;
+DCR L     ;  4 ; 1 ; L    ; 0 ; 0 ; + ;
+
+DCX B     ;  6 ; 1 ; BC   ; 0 ; 0 ; + ;
+DCX D     ;  6 ; 1 ; DE   ; 0 ; 0 ; + ;
+DCX H     ;  6 ; 1 ; HL   ; 0 ; 0 ; + ;
+DCX S     ;  6 ; 1 ; *    ; 0 ; 1 ; + ;
+
+INR A     ;  4 ; 1 ; A    ; 0 ; 0 ; + ;
+INR B     ;  4 ; 1 ; B    ; 0 ; 0 ; + ;
+INR C     ;  4 ; 1 ; C    ; 0 ; 0 ; + ;
+INR D     ;  4 ; 1 ; D    ; 0 ; 0 ; + ;
+INR E     ;  4 ; 1 ; E    ; 0 ; 0 ; + ;
+INR F     ;  4 ; 1 ; F    ; 0 ; 0 ; + ;
+INR H     ;  4 ; 1 ; H    ; 0 ; 0 ; + ;
+INR L     ;  4 ; 1 ; L    ; 0 ; 0 ; + ;
+
+INX B     ;  6 ; 1 ; BC   ; 0 ; 0 ; + ;
+INX D     ;  6 ; 1 ; DE   ; 0 ; 0 ; + ;
+INX H     ;  6 ; 1 ; HL   ; 0 ; 0 ; + ;
+INX S     ;  6 ; 1 ; *    ; 0 ; 1 ; + ;
+
+JNZ 16b   ; 10 ; 3 ;      ; 0 ; 0 ; - ;
+
+LDA 16b   ; 13 ; 3 ; A    ; 1 ; 0 ; + ;
+
+LHLD 16b  ; 16 ; 3 ; HL   ; 2 ; 0 ; + ;
+
+LXI B,16b ; 10 ; 3 ; BC   ; 2 ; 0 ; + ;
+LXI D,16b ; 10 ; 3 ; DE   ; 2 ; 0 ; + ;
+LXI H,16b ; 10 ; 3 ; HL   ; 2 ; 0 ; + ;
+LXI S,16b ; 10 ; 3 ; SP   ; 2 ; 1 ; + ;
+
+MOV A,A   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,B   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,C   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,D   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,E   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,F   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,H   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+MOV A,L   ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+MOV B,A   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,B   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,C   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,D   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,E   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,F   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,H   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+MOV B,L   ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+
+MOV C,A   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,B   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,C   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,D   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,E   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,F   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,H   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+MOV C,L   ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+
+MOV D,A   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,B   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,C   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,D   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,E   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,F   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,H   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+MOV D,L   ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+
+MOV E,A   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,B   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,C   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,D   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,E   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,F   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,H   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+MOV E,L   ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+
+MOV F,A   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,B   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,C   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,D   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,E   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,F   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,H   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+MOV F,L   ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+
+MOV H,A   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,B   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,C   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,D   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,E   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,F   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,H   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+MOV H,L   ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+
+
+MOV L,A   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,B   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,C   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,D   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,E   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,F   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,H   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+MOV L,L   ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+
+MVI A,8b  ; 7  ; 2 ; A    ; 0 ; 0 ; + ;
+MVI B,8b  ; 7  ; 2 ; B    ; 0 ; 0 ; + ;
+MVI C,8b  ; 7  ; 2 ; C    ; 0 ; 0 ; + ;
+MVI D,8b  ; 7  ; 2 ; D    ; 0 ; 0 ; + ;
+MVI E,8b  ; 7  ; 2 ; E    ; 0 ; 0 ; + ;
+MVI F,8b  ; 7  ; 2 ; F    ; 0 ; 0 ; + ;
+MVI H,8b  ; 7  ; 2 ; H    ; 0 ; 0 ; + ;
+MVI L,8b  ; 7  ; 2 ; L    ; 0 ; 0 ; + ;
+
+NOP       ; 4  ; 1 ; *    ; 0 ; 0 ; + ;
+
+ORA A     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+ORA B     ; 4  ; 1 ; B    ; 0 ; 0 ; + ;
+ORA C     ; 4  ; 1 ; C    ; 0 ; 0 ; + ;
+ORA D     ; 4  ; 1 ; D    ; 0 ; 0 ; + ;
+ORA E     ; 4  ; 1 ; E    ; 0 ; 0 ; + ;
+ORA F     ; 4  ; 1 ; F    ; 0 ; 0 ; + ;
+ORA H     ; 4  ; 1 ; H    ; 0 ; 0 ; + ;
+ORA L     ; 4  ; 1 ; L    ; 0 ; 0 ; + ;
+
+ORI 8b    ; 7  ; 2 ; A    ; 0 ; 0 ; + ;
+
+POP B     ; 10 ; 3 ; BC   ; 0 ; 1 ; - ;
+POP D     ; 10 ; 3 ; DE   ; 0 ; 1 ; - ;
+POP H     ; 10 ; 3 ; HL   ; 0 ; 1 ; - ;
+POP PSW   ; 10 ; 3 ; A    ; 0 ; 1 ; - ;
+
+PUSH B    ; 12 ; 3 ; *    ; 0 ; 1 ; - ;
+PUSH D    ; 12 ; 3 ; *    ; 0 ; 1 ; - ;
+PUSH H    ; 12 ; 3 ; *    ; 0 ; 1 ; - ;
+PUSH PSW  ; 12 ; 3 ; *    ; 0 ; 1 ; - ;
+
+RAL       ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+RAR       ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+RLC       ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+RRC       ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+RET       ; 10 ; 3 ; *    ; 0 ; 0 ; - ;
+
+SBB A     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB B     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB C     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB D     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB E     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB F     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB H     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SBB L     ; 4  ; 1 ; A    ; 0 ; 0 ;	+ ;
+
+SBI 8b    ; 7  ; 2 ; A    ; 0 ; 0 ; + ;
+
+SHLD 16b  ; 16 ; 3 ; *    ; 2 ; 0 ; + ;
+
+STA 16b   ; 13 ; 3 ; *    ; 1 ; 0 ; + ;
+
+STC       ; 4  ; 1 ; *    ; 0 ; 0 ; + ;
+
+SUB A     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB B     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB C     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB D     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB E     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB F     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB H     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+SUB L     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+SUI 8b    ; 7  ; 2 ; A    ; 0 ; 0 ; + ;
+
+XCHG      ; 4  ; 1 ; DEHL ; 0 ; 0 ; + ;
+
+XRA A     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA B     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA C     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA D     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA E     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA F     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA H     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+XRA L     ; 4  ; 1 ; A    ; 0 ; 0 ; + ;
+
+
+XRI 8b    ; 7  ; 2 ; A    ; 0 ; 0 ; + ;
+
+END
